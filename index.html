@@ -11,10 +11,33 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
+        /* Force browser native elements (like date picker calendars) to render in dark mode matching our app */
+        :root {
+            color-scheme: dark;
+        }
         body {
             font-family: 'Inter', sans-serif;
             background-color: #0b0f19;
         }
+        
+        /* Transparently stretch the browser's native indicator overlay over the right side of the input.
+           This ensures clicking the custom calendar icon ALWAYS launches the native picker across all devices. */
+        .date-wrapper {
+            position: relative;
+        }
+        .date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 44px;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
         /* Custom scrollbars */
         ::-webkit-scrollbar {
             width: 8px;
@@ -99,7 +122,7 @@
             <div class="flex items-center space-x-3">
                 <div class="p-3 bg-indigo-600/10 text-indigo-400 rounded-xl border border-indigo-500/20">
                     <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31( 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                     </svg>
                 </div>
                 <div>
@@ -218,7 +241,7 @@
                     </button>
                     <button onclick="openModal('settingsModal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="System Settings">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31( 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         </svg>
                     </button>
                     <button id="logoutBtn" onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="Sign Out">
@@ -471,8 +494,22 @@
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-slate-300 mb-1">Target Expiry Date <span class="text-rose-500">*</span></label>
-                        <input type="date" id="itemExpiryDate" required class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="block text-xs font-semibold text-slate-300">Target Expiry Date <span class="text-rose-500">*</span></label>
+                        </div>
+                        
+                        <!-- Inputs Wrap Container with overlaid native triggers -->
+                        <div class="date-wrapper">
+                            <!-- Calendar Picker Mode Input -->
+                            <input type="date" id="itemExpiryDate" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 pr-10 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition cursor-pointer" />
+                            
+                            <!-- Beautiful Absolute Overlay Calendar Icon (Native hidden element matches exactly over this layout) -->
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 pointer-events-none transition">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -492,18 +529,22 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">When should we email you alerts?</label>
-                    <div class="grid grid-cols-3 gap-2 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <input type="checkbox" id="alert30" value="30" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
-                            <span class="text-xs text-slate-300">30 days out</span>
+                            <span class="text-xs text-slate-300">30d out</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <input type="checkbox" id="alert7" value="7" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
-                            <span class="text-xs text-slate-300">7 days out</span>
+                            <span class="text-xs text-slate-300">7d out</span>
                         </label>
                         <label class="flex items-center space-x-2 cursor-pointer">
                             <input type="checkbox" id="alert1" value="1" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
-                            <span class="text-xs text-slate-300">1 day out</span>
+                            <span class="text-xs text-slate-300">1d out</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="alert0" value="0" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
+                            <span class="text-xs text-slate-300">Day of (0d)</span>
                         </label>
                     </div>
                 </div>
@@ -514,7 +555,7 @@
                 </div>
 
                 <div class="pt-4 border-t border-slate-800 flex justify-end space-x-3">
-                    <button type="button" onclick="closeModal('addItemModal')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-lg text-xs font-semibold transition">Cancel</button>
+                    <button type="button" onclick="closeModal('addItemModal')" class="bg-slate-800 hover:bg-slate-750 text-slate-300 px-4 py-2.5 rounded-lg text-xs font-semibold transition">Cancel</button>
                     <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-xs font-semibold transition shadow-lg shadow-indigo-600/10">Save Item</button>
                 </div>
             </form>
@@ -526,7 +567,7 @@
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6">
             <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31( 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
                     <span>System Settings & Storage Drivers</span>
                 </h3>
                 <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition">
@@ -545,8 +586,8 @@
                     <h4 class="font-semibold text-slate-300">Data Backups & Migrations</h4>
                     <p class="text-[10px] text-slate-500 leading-normal">Your custom data resides inside your active storage engine. You can export a copy of all current documents for safekeeping.</p>
                     <div class="flex gap-2 mt-2">
-                        <button onclick="exportActiveBackupData()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Export Backup</button>
-                        <button id="importBtn" onclick="triggerImportSelection()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Import Backup</button>
+                        <button onclick="exportActiveBackupData()" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Export Backup</button>
+                        <button id="importBtn" onclick="triggerImportSelection()" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Import Backup</button>
                         <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackupData(event)">
                     </div>
                 </div>
@@ -561,7 +602,7 @@
                 <div id="cloudDisconnectBanner" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
                     <h4 class="font-bold text-white text-xs">☁️ Cloud Integration Active</h4>
                     <p class="text-[10px] text-slate-400">Your expiration schedules are synchronized in real-time. Want to disconnect cloud services and switch strictly to local device storage?</p>
-                    <button onclick="switchToLocalMode()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-1.5 rounded text-[11px] transition">Disconnect Cloud Sync</button>
+                    <button onclick="switchToLocalMode()" class="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-semibold py-1.5 rounded text-[11px] transition">Disconnect Cloud Sync</button>
                 </div>
 
                 <!-- Footer Actions -->
@@ -581,7 +622,7 @@
             <p class="text-xs text-slate-400 mb-5 leading-relaxed" id="dialogMessage">Alert message details will be displayed here.</p>
             <div class="flex justify-center space-x-3">
                 <button id="dialogBtnPrimary" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">OK</button>
-                <button id="dialogBtnSecondary" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-lg font-semibold transition">Cancel</button>
+                <button id="dialogBtnSecondary" class="hidden bg-slate-800 hover:bg-slate-750 text-slate-300 text-xs px-4 py-2 rounded-lg font-semibold transition">Cancel</button>
             </div>
         </div>
     </div>
@@ -1007,7 +1048,7 @@
                 case 'vehicle':
                     return { label: 'Auto / Moto', bg: 'bg-blue-500/10 border-blue-500/20 text-blue-400', emoji: '🚗' };
                 case 'subscription':
-                    return { label: 'Subscription', bg: 'bg-amber-500/10 border-amber-500/20 text-amber-400', emoji: '💳' };
+                    return { label: 'Subscription', bg: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400', emoji: '💳' };
                 default:
                     return { label: 'Household', bg: 'bg-slate-500/10 border-slate-500/20 text-slate-400', emoji: '🏠' };
             }
@@ -1113,6 +1154,7 @@
 
             items.forEach(item => {
                 const daysLeft = calculateDaysRemaining(item.expiryDate);
+                // Matches exact day window configurations, supporting 0 (Today) correctly!
                 if (item.alertWindows && item.alertWindows.includes(daysLeft)) {
                     matchedAlerts.push({ item: item, daysLeft: daysLeft });
                 }
@@ -1150,6 +1192,9 @@
                 recipient = localStorage.getItem('lifesync_simulated_email') || "local-user@device.local";
             }
 
+            // Custom dynamic phrasing for expirations due today
+            const relativeHeadingPhrase = daysLeft === 0 ? "expires TODAY!" : `due in ${daysLeft} days!`;
+
             mail.className = "bg-slate-950 border border-slate-850 rounded-xl p-4 text-xs space-y-2 animate-in fade-in slide-in-from-top-4 duration-200";
             mail.innerHTML = `
                 <div class="flex items-center justify-between border-b border-slate-800 pb-2">
@@ -1161,11 +1206,11 @@
                 </div>
                 <div class="space-y-1 text-slate-300">
                     <div><strong class="text-slate-500 text-[10px] uppercase">To:</strong> <span class="text-white font-medium">${recipient}</span></div>
-                    <div><strong class="text-slate-500 text-[10px] uppercase">Subject:</strong> <span class="text-rose-400 font-bold">🚨 LifeSync Alert: "${escapeHtml(item.name)}" due in ${daysLeft} days!</span></div>
+                    <div><strong class="text-slate-500 text-[10px] uppercase">Subject:</strong> <span class="text-rose-400 font-bold">🚨 LifeSync Alert: "${escapeHtml(item.name)}" ${relativeHeadingPhrase}</span></div>
                 </div>
                 <div class="bg-slate-900 border border-slate-850 p-2 rounded text-[10px] font-mono leading-relaxed text-slate-400">
                     Hello user,<br><br>
-                    Your tracked schedule <strong class="text-slate-200">"${escapeHtml(item.name)}"</strong> falls inside your warning threshold of <strong>${daysLeft} days</strong> remaining.<br><br>
+                    Your tracked schedule <strong class="text-slate-200">"${escapeHtml(item.name)}"</strong> falls inside your warning threshold of <strong>${daysLeft === 0 ? "today" : daysLeft + " days"}</strong> remaining.<br><br>
                     <strong>Schedule Expiry:</strong> ${item.expiryDate}<br>
                     <strong>Category:</strong> ${categoryLabel}<br>
                     <strong>Notes:</strong> ${escapeHtml(item.notes) || "None"}
@@ -1210,14 +1255,21 @@
         };
 
         // --- CRUD PERSISTENCE ACTIONS ---
-        async function handleFormSubmit(event) {
+        window.handleFormSubmit = async function(event) {
             event.preventDefault();
             const storageMode = localStorage.getItem('lifesync_storage_mode');
 
             const id = document.getElementById('itemId').value || 'item-' + Date.now();
             const name = document.getElementById('itemName').value;
             const category = document.getElementById('itemCategory').value;
+
+            // Direct native calendar picker parsing
             const expiryDate = document.getElementById('itemExpiryDate').value;
+            if (!expiryDate) {
+                showDialog("Date Required", "Please select a target expiry date on the calendar picker.", "error");
+                return;
+            }
+
             const recurrence = document.getElementById('itemRecurrence').value;
             const notes = document.getElementById('itemNotes').value;
 
@@ -1225,6 +1277,7 @@
             if (document.getElementById('alert30').checked) alertWindows.push(30);
             if (document.getElementById('alert7').checked) alertWindows.push(7);
             if (document.getElementById('alert1').checked) alertWindows.push(1);
+            if (document.getElementById('alert0').checked) alertWindows.push(0);
 
             const payload = {
                 id,
@@ -1373,13 +1426,17 @@
             document.getElementById('itemId').value = item.id;
             document.getElementById('itemName').value = item.name;
             document.getElementById('itemCategory').value = item.category;
+            
+            // Populate calendar picker directly
             document.getElementById('itemExpiryDate').value = item.expiryDate;
+
             document.getElementById('itemRecurrence').value = item.recurrence;
             document.getElementById('itemNotes').value = item.notes || '';
 
             document.getElementById('alert30').checked = item.alertWindows ? item.alertWindows.includes(30) : false;
             document.getElementById('alert7').checked = item.alertWindows ? item.alertWindows.includes(7) : false;
             document.getElementById('alert1').checked = item.alertWindows ? item.alertWindows.includes(1) : false;
+            document.getElementById('alert0').checked = item.alertWindows ? item.alertWindows.includes(0) : false;
 
             document.getElementById('modalTitle').textContent = "Edit Tracked Item";
             toggleRecurrenceHelper();
@@ -1419,7 +1476,7 @@
             await window.saveSettings();
         };
 
-        // --- AUTH & LOGIN HANDLERS ---
+        // --- AUTH & SIGNUP HANDLERS ---
         window.handleAuthSubmit = async function(event) {
             event.preventDefault();
             const email = document.getElementById('authEmail').value;
@@ -1435,8 +1492,22 @@
             } catch(err) {
                 console.error("Auth exception:", err);
                 let text = "Check credentials and try again.";
-                if (err.code === "auth/weak-password") text = "Password must be at least 6 characters.";
-                if (err.code === "auth/email-already-in-use") text = "Account already exists under this email address.";
+                
+                // Specific descriptive error messages to guide configuration issues
+                if (err.code === "auth/weak-password") {
+                    text = "Password must be at least 6 characters.";
+                } else if (err.code === "auth/email-already-in-use") {
+                    text = "An account already exists under this email address.";
+                } else if (err.code === "auth/operation-not-allowed") {
+                    text = "Email/Password sign-up is not enabled in your Firebase Console. Go to Authentication -> Sign-in Method, and enable Email/Password.";
+                } else if (err.code === "auth/invalid-email") {
+                    text = "The email address is invalid. Please double check the format.";
+                } else if (err.code === "auth/user-not-found" || err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
+                    text = "Invalid email or password combination.";
+                } else {
+                    text = `Error (${err.code}): ${err.message}`;
+                }
+                
                 showDialog("Authentication Failed", text, "error");
             }
         };
@@ -1674,6 +1745,7 @@
             document.getElementById('alert30').checked = true;
             document.getElementById('alert7').checked = true;
             document.getElementById('alert1').checked = true;
+            document.getElementById('alert0').checked = true;
             document.getElementById('modalTitle').textContent = "Track New Item";
         }
 
