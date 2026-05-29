@@ -1,0 +1,1312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeSync Pro | Secure Cloud Expiration Tracker</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col antialiased">
+
+    <!-- SETUP SCREEN (Only visible if Firebase Config is missing on custom deploys) -->
+    <div id="setupScreen" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+            <div class="flex items-center space-x-3">
+                <div class="p-3 bg-indigo-600/10 text-indigo-400 rounded-xl border border-indigo-500/20">
+                    <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    </svg>
+                </div>
+                <div>
+                    <h2 class="text-xl font-bold text-white tracking-wide">Connect Your Cloud Database</h2>
+                    <p class="text-xs text-slate-400">Step-by-step setup for safe multi-device synchronization</p>
+                </div>
+            </div>
+
+            <div class="space-y-4 text-xs text-slate-300 leading-relaxed">
+                <p>To enable safe, real-time syncing across your laptop and phone, LifeSync utilizes your own free <strong>Google Firebase</strong> database:</p>
+                <ol class="list-decimal list-inside space-y-2.5 bg-slate-950 p-4 rounded-xl border border-slate-800 text-slate-400">
+                    <li>Go to <a href="https://console.firebase.google.com/" target="_blank" class="text-indigo-400 underline hover:text-indigo-300">firebase.google.com (Console)</a> and create a free project.</li>
+                    <li>Add a <strong>Firestore Database</strong> (enable test mode / nearest region).</li>
+                    <li>Create a <strong>Web App</strong> registration under your project settings.</li>
+                    <li>Copy and paste the config block JSON object below:</li>
+                </ol>
+            </div>
+
+            <div class="space-y-2">
+                <label class="block text-xs font-semibold text-slate-300">Firebase Config JSON Object</label>
+                <textarea id="setupConfigInput" rows="5" placeholder='{&#10;  "apiKey": "AIzaSy...",&#10;  "authDomain": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></textarea>
+            </div>
+
+            <div class="flex justify-end pt-2">
+                <button onclick="saveFirebaseConfigSetup()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-600/20 transition">
+                    Connect & Initialize
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- AUTHENTICATION SCREEN (Login/Registration with premium dark visual glassmorphism) -->
+    <div id="authScreen" class="hidden fixed inset-0 z-40 bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+            <div class="text-center space-y-2">
+                <div class="inline-flex p-3 bg-indigo-600/10 text-indigo-400 rounded-2xl border border-indigo-500/20 mx-auto">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-extrabold text-white tracking-wide">Secure LifeSync Account</h2>
+                <p class="text-xs text-slate-400">Sign in to sync medications, pet care, & vehicle schedules</p>
+            </div>
+
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="authEmail" required placeholder="yourname@domain.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                </div>
+
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-semibold text-slate-300">Password</label>
+                        <span class="text-[10px] text-slate-500">Min. 6 characters</span>
+                    </div>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                </div>
+
+                <div class="flex items-center justify-between pt-1">
+                    <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">
+                        Don't have an account? Sign Up
+                    </button>
+                </div>
+
+                <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm py-2.5 rounded-lg shadow-lg shadow-indigo-600/20 transition">
+                    Sign In
+                </button>
+            </form>
+
+            <div class="relative flex py-2 items-center text-slate-700">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink mx-4 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Or Try Offline Demo</span>
+                <div class="flex-grow border-t border-slate-800"></div>
+            </div>
+
+            <button onclick="signInAnonymouslyFallback()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold py-2.5 rounded-lg transition">
+                ⚡ Anonymous Quick Access
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP DASHBOARD INTERFACE (Rendered once auth is successful) -->
+    <div id="mainDashboard" class="hidden flex-col flex-grow">
+        <!-- TOP NAVIGATION HEADER -->
+        <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2 bg-indigo-600/20 text-indigo-400 rounded-lg border border-indigo-500/30">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            LifeSync <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
+                        </h1>
+                        <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
+                    </div>
+                </div>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <button onclick="openModal('addItemModal')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/20 transition duration-150">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                        <span class="hidden sm:inline">Track New Item</span>
+                    </button>
+                    <button onclick="openModal('settingsModal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="System Settings">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        </svg>
+                    </button>
+                    <button onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="Sign Out">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN BODY content -->
+        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col space-y-8">
+            
+            <!-- SUMMARY STATS BOARD -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <!-- Total -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Tracked</p>
+                        <p class="text-2xl font-bold text-white mt-1" id="statTotal">0</p>
+                    </div>
+                </div>
+                <!-- Days column count -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-rose-500/10 text-rose-400 rounded-lg border border-rose-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Due in Days</p>
+                        <p class="text-2xl font-bold text-rose-500 mt-1" id="statDays">0</p>
+                    </div>
+                </div>
+                <!-- Weeks count -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Due in Weeks</p>
+                        <p class="text-2xl font-bold text-amber-500 mt-1" id="statWeeks">0</p>
+                    </div>
+                </div>
+                <!-- Months count -->
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Due in Months</p>
+                        <p class="text-2xl font-bold text-emerald-500 mt-1" id="statMonths">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK FILTER TOOLBAR -->
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex flex-wrap gap-2" id="filterBar">
+                    <button onclick="setCategoryFilter('all')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-indigo-600/20 border-indigo-500/50 text-indigo-300" data-category="all">
+                        All Categories
+                    </button>
+                    <button onclick="setCategoryFilter('me')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="me">
+                        👤 My Health
+                    </button>
+                    <button onclick="setCategoryFilter('dog')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="dog">
+                        🐾 Dog's Medical/Care
+                    </button>
+                    <button onclick="setCategoryFilter('vehicle')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="vehicle">
+                        🚗 Auto / Moto
+                    </button>
+                    <button onclick="setCategoryFilter('subscription')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="subscription">
+                        💳 Subscriptions
+                    </button>
+                    <button onclick="setCategoryFilter('household')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="household">
+                        🏠 Household & Other
+                    </button>
+                </div>
+
+                <div class="flex items-center space-x-2">
+                    <button onclick="triggerDailyNotificationCheck()" class="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs tracking-wide shadow-lg shadow-amber-500/10 transition duration-150">
+                        <svg class="w-4 h-4 text-slate-950" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" />
+                        </svg>
+                        <span>Simulate Daily Alarm Check</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TIMELINE GRIDS (THE THREE TIME-BUCKET COLUMNS) -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Days Bucket -->
+                <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Days</h2>
+                        </div>
+                        <span id="countDays" class="text-xs bg-rose-500/10 text-rose-400 font-semibold px-2 py-0.5 rounded-full border border-rose-500/20">0 Items</span>
+                    </div>
+                    <div class="flex-grow space-y-3.5 overflow-y-auto" id="colDays"></div>
+                </div>
+
+                <!-- Weeks Bucket -->
+                <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Weeks</h2>
+                        </div>
+                        <span id="countWeeks" class="text-xs bg-amber-500/10 text-amber-400 font-semibold px-2 py-0.5 rounded-full border border-amber-500/20">0 Items</span>
+                    </div>
+                    <div class="flex-grow space-y-3.5 overflow-y-auto" id="colWeeks"></div>
+                </div>
+
+                <!-- Months Bucket -->
+                <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Months</h2>
+                        </div>
+                        <span id="countMonths" class="text-xs bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/20">0 Items</span>
+                    </div>
+                    <div class="flex-grow space-y-3.5 overflow-y-auto" id="colMonths"></div>
+                </div>
+            </div>
+
+            <!-- LOWER SECTION: EMAIL CONSOLE & CONFIGURATION -->
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                
+                <!-- EMAIL CONSOLE -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col h-[400px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-md border border-indigo-500/20">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-white">Triggered Email Notifications</h2>
+                                <p class="text-[10px] text-slate-400">Preview of automated warning emails</p>
+                            </div>
+                        </div>
+                        <button onclick="clearOutbox()" class="text-xs text-slate-400 hover:text-white transition duration-150">Clear Logs</button>
+                    </div>
+
+                    <div class="flex-grow overflow-y-auto space-y-3 pr-2" id="emailOutbox">
+                        <div class="h-full flex flex-col items-center justify-center text-center p-4" id="emptyOutboxMessage">
+                            <svg class="w-12 h-12 text-slate-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v4.5m12+3a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            <p class="text-xs font-semibold text-slate-500">No email alerts triggered today.</p>
+                            <p class="text-[10px] text-slate-600 max-w-[280px] mt-1">Tap the "Simulate Daily Alarm Check" above to search database rules and generate emails.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ALERTS SYSTEM SETTINGS -->
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-[400px]">
+                    <div>
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span>🚀 Cloud Notification Integrations</span>
+                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Firestore Live</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1 mb-4">Set up a Make/Zapier webhook to turn these simulation logs into actual emails directly inside your personal mailbox.</p>
+
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Incoming Webhook Endpoint</label>
+                                <input type="url" id="webhookInput" placeholder="https://hook.make.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                            </div>
+                            
+                            <div class="bg-slate-950/50 border border-slate-800/80 rounded-lg p-3 text-xs space-y-2">
+                                <p class="font-semibold text-slate-200 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> Live Synchronization Active
+                                </p>
+                                <p class="text-slate-400 text-[11px] leading-relaxed">
+                                    Your medications and insurance policies are synced with Google Cloud. Feel free to open this page on your phone simultaneously; any changes will write back instantly without page refresh!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800 flex justify-between items-center">
+                        <span class="text-[11px] text-indigo-400 font-semibold" id="cloudStatusTag">Sync status: Active</span>
+                        <button onclick="saveProfileSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition">Save Webhook</button>
+                    </div>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-6 mt-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p class="text-xs text-slate-500">&copy; 2026 LifeSync Pro Cloud. Secure personal expiration sandbox.</p>
+            <div class="flex space-x-4 text-xs text-slate-400">
+                <button onclick="disconnectFirebaseConfig()" class="hover:text-rose-400 text-slate-500 transition">Disconnect Firebase</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ADD/EDIT ITEM MODAL -->
+    <div id="addItemModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div class="bg-slate-900/50 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold text-white flex items-center gap-2" id="modalTitle">
+                    <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded border border-indigo-500/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    </span>
+                    <span>Track New Item</span>
+                </h3>
+                <button onclick="closeModal('addItemModal')" class="text-slate-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <form id="itemForm" onsubmit="handleFormSubmit(event)" class="px-6 py-4 space-y-4">
+                <input type="hidden" id="itemId">
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Item / Task Name <span class="text-rose-500">*</span></label>
+                    <input type="text" id="itemName" required placeholder="e.g. Dog dewormer pill, Auto insurance renewal" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Category <span class="text-rose-500">*</span></label>
+                        <select id="itemCategory" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                            <option value="me">👤 My Health</option>
+                            <option value="dog">🐾 Dog's Medical/Care</option>
+                            <option value="vehicle">🚗 Auto / Moto</option>
+                            <option value="subscription">💳 Subscriptions</option>
+                            <option value="household">🏠 Household & Other</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Target Expiry Date <span class="text-rose-500">*</span></label>
+                        <input type="date" id="itemExpiryDate" required class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Does this repeat / recur?</label>
+                    <select id="itemRecurrence" onchange="toggleRecurrenceHelper()" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                        <option value="none">Once-off (No repeat)</option>
+                        <option value="weekly">Every Week</option>
+                        <option value="monthly">Every Month</option>
+                        <option value="3months">Every 3 Months</option>
+                        <option value="6months">Every 6 Months</option>
+                        <option value="yearly">Every Year</option>
+                        <option value="2years">Every 2 Years</option>
+                    </select>
+                    <p class="text-[10px] text-slate-400 mt-1" id="recurrenceHelpText">Automatically push deadlines on completion check.</p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">When should we email you alerts?</label>
+                    <div class="grid grid-cols-3 gap-2 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="alert30" value="30" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
+                            <span class="text-xs text-slate-300">30 days out</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="alert7" value="7" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
+                            <span class="text-xs text-slate-300">7 days out</span>
+                        </label>
+                        <label class="flex items-center space-x-2 cursor-pointer">
+                            <input type="checkbox" id="alert1" value="1" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4">
+                            <span class="text-xs text-slate-300">1 day out</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Details / Notes</label>
+                    <textarea id="itemNotes" rows="2" placeholder="Dosage, prescription, links, cancel policies..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition resize-none"></textarea>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800 flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('addItemModal')" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-lg text-xs font-semibold transition">Cancel</button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-xs font-semibold transition shadow-lg shadow-indigo-600/10">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- SYSTEM CONFIGURATION MODAL -->
+    <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                    <span>Cloud Configuration & User Profile</span>
+                </h3>
+                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs">
+                <div>
+                    <h4 class="font-semibold text-slate-300 mb-1">Email Recipient</h4>
+                    <input type="email" id="emailInput" readonly class="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-slate-500 cursor-not-allowed" />
+                </div>
+
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-slate-300">Firestore Migration Backups</h4>
+                    <p class="text-[10px] text-slate-500 leading-normal">Your custom data resides inside Google Firestore. You can export a copy of all current documents for safe keeping.</p>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="exportCloudData()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Export Backup</button>
+                    </div>
+                </div>
+
+                <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+                    <button onclick="handleLogout()" class="text-rose-500 hover:text-rose-400 font-semibold">Sign Out Account</button>
+                    <button onclick="closeModal('settingsModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold transition">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CUSTOM DIAGALOG OVERLAY (No standard alert boxes) -->
+    <div id="dialogModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-100 p-5 text-center">
+            <div class="flex items-center justify-center text-amber-400 mb-3" id="dialogIcon"></div>
+            <h3 class="text-sm font-bold text-white mb-2" id="dialogTitle">Dialog Title</h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed" id="dialogMessage">Alert message details will be displayed here.</p>
+            <div class="flex justify-center space-x-3">
+                <button id="dialogBtnPrimary" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">OK</button>
+                <button id="dialogBtnSecondary" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-lg font-semibold transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FIREBASE INITIALIZATION & CORE LOGIC SCRIPTS -->
+    <script type="module">
+        // Import Firebase modules using standard modular SDK v11 (Rule 3 prioritizes ES module imports)
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        import { 
+            getAuth, 
+            signInWithCustomToken, 
+            signInAnonymously, 
+            onAuthStateChanged, 
+            signOut, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword 
+        } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            getDoc, 
+            collection, 
+            onSnapshot, 
+            deleteDoc, 
+            writeBatch 
+        } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+        // Global parameters provided by preview engine
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'lifesync-cloud-tracker';
+
+        // Fallback default mock database parameters
+        const defaultFirebaseMock = {
+            apiKey: "mock-apiKey-placeholder-replace-me",
+            authDomain: "mock-authDomain-placeholder-replace-me",
+            projectId: "mock-projectId",
+            storageBucket: "mock-storageBucket",
+            messagingSenderId: "mock-messaging",
+            appId: "mock-app"
+        };
+
+        let app, auth, db;
+        let items = [];
+        let profile = { webhook: "" };
+        let currentFilter = 'all';
+        let isSignUpMode = false;
+        let activeFirestoreUnsubscribe = null;
+        let activeProfileUnsubscribe = null;
+
+        // On window load, check config parameters
+        window.onload = function() {
+            initLifecycle();
+        };
+
+        // Core initialization loop
+        async function initLifecycle() {
+            let activeConfig = null;
+
+            // 1. Check if Canvas environment-provided config exists
+            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                try {
+                    activeConfig = JSON.parse(__firebase_config);
+                } catch (e) {
+                    console.error("Invalid preview configuration parameter", e);
+                }
+            }
+
+            // 2. Check if local custom configuration is saved in browser memory
+            if (!activeConfig) {
+                const storedConfig = localStorage.getItem('lifesync_firebase_config_v2');
+                if (storedConfig) {
+                    try {
+                        activeConfig = JSON.parse(storedConfig);
+                    } catch (e) {
+                        console.error("Invalid locally saved configuration data");
+                    }
+                }
+            }
+
+            // 3. Render setup wizard screen if no database configuration is present
+            if (!activeConfig) {
+                document.getElementById('setupScreen').classList.remove('hidden');
+                return;
+            }
+
+            // Configure Firebase with active configuration
+            try {
+                app = initializeApp(activeConfig);
+                auth = getAuth(app);
+                db = getFirestore(app);
+
+                // Run Auth listener to determine current view state
+                setupAuthenticationListener();
+            } catch (err) {
+                console.error("Database connection failure:", err);
+                showDialog("Database Connection Error", "The Firebase configurations entered could not initialize. Try correcting your JSON input or clearing your settings.", "error");
+                document.getElementById('setupScreen').classList.remove('hidden');
+            }
+        }
+
+        // Authentication handler (Ensures RULE 3 compliance: Auth precedes any Firestore actions)
+        async function setupAuthenticationListener() {
+            // Trigger automatic Custom Token connection if environment provides a standard runtime token
+            if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                try {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } catch(e) {
+                    console.warn("Failed custom token initialization fallback", e);
+                }
+            }
+
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    // Update user display configurations
+                    document.getElementById('authScreen').classList.add('hidden');
+                    document.getElementById('setupScreen').classList.add('hidden');
+                    document.getElementById('mainDashboard').classList.remove('hidden');
+                    document.getElementById('mainDashboard').classList.add('flex');
+                    document.getElementById('userEmailTag').textContent = user.isAnonymous ? "Anonymous Guest Account" : `Logged in: ${user.email}`;
+                    document.getElementById('emailInput').value = user.isAnonymous ? "guest-mode@domain.com" : user.email;
+
+                    // Bind Firestore updates once authenticated (RULE 3 compliance)
+                    bindRealtimeFirestoreCollections(user.uid);
+                } else {
+                    // Tear down previous listeners
+                    if (activeFirestoreUnsubscribe) activeFirestoreUnsubscribe();
+                    if (activeProfileUnsubscribe) activeProfileUnsubscribe();
+
+                    // Display auth login pane
+                    document.getElementById('mainDashboard').classList.add('hidden');
+                    document.getElementById('setupScreen').classList.add('hidden');
+                    document.getElementById('authScreen').classList.remove('hidden');
+                }
+            });
+        }
+
+        // Firestore Real-Time Subscriptions (Uses strictly compliant paths - RULE 1)
+        function bindRealtimeFirestoreCollections(userId) {
+            // Define paths utilizing Rule 1: /artifacts/{appId}/users/{userId}/{collectionName}
+            const itemsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'items');
+            const profileDocRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile');
+
+            // Set up real-time listener for user items
+            // No compound query constraints used to maintain compatibility (RULE 2 compliance)
+            activeFirestoreUnsubscribe = onSnapshot(itemsCollectionRef, (snapshot) => {
+                items = [];
+                snapshot.forEach((doc) => {
+                    items.push({ id: doc.id, ...doc.data() });
+                });
+
+                // Client-side sorting (RULE 2 requirement - avoid orderBy() in Firestore queries)
+                items.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+
+                renderDashboardUI();
+            }, (error) => {
+                console.error("Firestore sync error:", error);
+                showDialog("Data Sync Error", "Failed to load live changes from the cloud. Verify your security permissions.", "error");
+            });
+
+            // Set up real-time settings profile configurations
+            activeProfileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    profile = docSnap.data();
+                } else {
+                    profile = { webhook: "" };
+                }
+                document.getElementById('webhookInput').value = profile.webhook || "";
+            }, (error) => {
+                console.warn("Profile fetch warning:", error);
+            });
+        }
+
+        // Render functions for the UI Dashboard
+        function renderDashboardUI() {
+            const colDays = document.getElementById('colDays');
+            const colWeeks = document.getElementById('colWeeks');
+            const colMonths = document.getElementById('colMonths');
+
+            colDays.innerHTML = '';
+            colWeeks.innerHTML = '';
+            colMonths.innerHTML = '';
+
+            let counterDays = 0;
+            let counterWeeks = 0;
+            let counterMonths = 0;
+
+            const filteredItems = items.filter(item => {
+                if (currentFilter === 'all') return true;
+                return item.category === currentFilter;
+            });
+
+            filteredItems.forEach(item => {
+                const daysLeft = calculateDaysRemaining(item.expiryDate);
+                const card = createItemCard(item, daysLeft);
+
+                if (daysLeft <= 7) {
+                    colDays.appendChild(card);
+                    counterDays++;
+                } else if (daysLeft > 7 && daysLeft <= 30) {
+                    colWeeks.appendChild(card);
+                    counterWeeks++;
+                } else {
+                    colMonths.appendChild(card);
+                    counterMonths++;
+                }
+            });
+
+            if (counterDays === 0) renderEmptyColumnState(colDays, "Days");
+            if (counterWeeks === 0) renderEmptyColumnState(colWeeks, "Weeks");
+            if (counterMonths === 0) renderEmptyColumnState(colMonths, "Months");
+
+            // Update Counts Labels
+            document.getElementById('countDays').textContent = `${counterDays} Items`;
+            document.getElementById('countWeeks').textContent = `${counterWeeks} Items`;
+            document.getElementById('countMonths').textContent = `${counterMonths} Items`;
+
+            // General Dashboard Analytics
+            document.getElementById('statTotal').textContent = items.length;
+            document.getElementById('statDays').textContent = items.filter(i => calculateDaysRemaining(i.expiryDate) <= 7).length;
+            document.getElementById('statWeeks').textContent = items.filter(i => {
+                const d = calculateDaysRemaining(i.expiryDate);
+                return d > 7 && d <= 30;
+            }).length;
+            document.getElementById('statMonths').textContent = items.filter(i => calculateDaysRemaining(i.expiryDate) > 30).length;
+        }
+
+        function renderEmptyColumnState(columnElement, title) {
+            columnElement.innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-850 rounded-xl py-12">
+                    <svg class="w-10 h-10 text-slate-800 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2" />
+                    </svg>
+                    <p class="text-xs font-semibold text-slate-500">No items due</p>
+                    <p class="text-[10px] text-slate-600 mt-0.5">Clear window for ${title.toLowerCase()}.</p>
+                </div>
+            `;
+        }
+
+        // Relative Date Calculations
+        function calculateDaysRemaining(dateString) {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const target = new Date(dateString);
+            target.setHours(0, 0, 0, 0);
+            
+            const diffTime = target - today;
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        function getCategoryDetails(category) {
+            switch(category) {
+                case 'me':
+                    return { label: 'My Health', bg: 'bg-teal-500/10 border-teal-500/20 text-teal-400', emoji: '👤' };
+                case 'dog':
+                    return { label: "Dog's Medical", bg: 'bg-purple-500/10 border-purple-500/20 text-purple-400', emoji: '🐾' };
+                case 'vehicle':
+                    return { label: 'Auto / Moto', bg: 'bg-blue-500/10 border-blue-500/20 text-blue-400', emoji: '🚗' };
+                case 'subscription':
+                    return { label: 'Subscription', bg: 'bg-amber-500/10 border-amber-500/20 text-amber-400', emoji: '💳' };
+                default:
+                    return { label: 'Household', bg: 'bg-slate-500/10 border-slate-500/20 text-slate-400', emoji: '🏠' };
+            }
+        }
+
+        // Card rendering logic
+        function createItemCard(item, daysRemaining) {
+            const card = document.createElement('div');
+            const cat = getCategoryDetails(item.category);
+            
+            let statusBadgeClass = '';
+            let statusText = '';
+            let ringColor = '';
+
+            if (daysRemaining < 0) {
+                statusBadgeClass = 'bg-rose-500/20 border-rose-500/30 text-rose-400';
+                statusText = `Expired ${Math.abs(daysRemaining)}d ago`;
+                ringColor = 'border-rose-500/50';
+            } else if (daysRemaining === 0) {
+                statusBadgeClass = 'bg-rose-500 text-slate-950 font-bold animate-pulse';
+                statusText = 'Due Today!';
+                ringColor = 'border-rose-500';
+            } else if (daysRemaining <= 3) {
+                statusBadgeClass = 'bg-rose-500/20 border-rose-500/30 text-rose-400 font-bold';
+                statusText = `${daysRemaining}d left`;
+                ringColor = 'border-rose-500/30';
+            } else if (daysRemaining <= 14) {
+                statusBadgeClass = 'bg-amber-500/20 border-amber-500/30 text-amber-400';
+                statusText = `${daysRemaining}d left`;
+                ringColor = 'border-amber-500/20';
+            } else {
+                statusBadgeClass = 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
+                statusText = `${daysRemaining}d left`;
+                ringColor = 'border-slate-800';
+            }
+
+            const activeAlertsStr = item.alertWindows ? item.alertWindows.map(w => `${w}d`).join(', ') : 'None';
+
+            card.className = `group bg-slate-900/60 border ${ringColor} rounded-xl p-4 hover:bg-slate-900 hover:border-slate-700 hover:shadow-xl transition duration-200 relative overflow-hidden`;
+            
+            // Render card templates using standard DOM
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ${cat.bg}">
+                        <span>${cat.emoji}</span>
+                        <span>${cat.label}</span>
+                    </span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold border ${statusBadgeClass}">
+                        ${statusText}
+                    </span>
+                </div>
+
+                <div>
+                    <h3 class="text-sm font-bold text-white tracking-wide truncate group-hover:text-indigo-400 transition" title="${escapeHtml(item.name)}">
+                        ${escapeHtml(item.name)}
+                    </h3>
+                    <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed" title="${escapeHtml(item.notes || '')}">
+                        ${escapeHtml(item.notes) || '<span class="text-slate-600 italic">No notes details added</span>'}
+                    </p>
+                </div>
+
+                <div class="mt-3.5 pt-3 border-t border-slate-800/85 flex items-center justify-between text-[10px]">
+                    <div class="flex items-center text-slate-500 gap-1" title="Notification trigger thresholds">
+                        <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                        </svg>
+                        <span>Alerts: <strong class="text-slate-400">${activeAlertsStr}</strong></span>
+                    </div>
+
+                    <div class="flex items-center text-slate-500 gap-1">
+                        <svg class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 12H18" />
+                        </svg>
+                        <span>Repeat: <strong class="text-slate-400 capitalize">${item.recurrence === 'none' ? 'Once' : item.recurrence}</strong></span>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-end space-x-2">
+                    <button id="btn-edit-${item.id}" class="text-xs text-slate-400 hover:text-white hover:bg-slate-800 px-2.5 py-1 rounded border border-slate-800 transition">
+                        Edit
+                    </button>
+                    <button id="btn-del-${item.id}" class="text-xs text-rose-400/80 hover:text-rose-400 hover:bg-rose-500/10 px-2.5 py-1 rounded border border-slate-800 hover:border-rose-500/20 transition">
+                        Delete
+                    </button>
+                    <button id="btn-done-${item.id}" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-1 rounded transition">
+                        Check Off
+                    </button>
+                </div>
+            `;
+
+            // Bind click handlers directly to element IDs to bypass string execution issues
+            card.querySelector(`#btn-edit-${item.id}`).onclick = () => editItem(item.id);
+            card.querySelector(`#btn-del-${item.id}`).onclick = () => confirmItemDelete(item.id);
+            card.querySelector(`#btn-done-${item.id}`).onclick = () => completeOrRenewItem(item.id);
+
+            return card;
+        }
+
+        // --- WEBHOOK DISPATCH & EMAIL ALARM EMULATOR ---
+        window.triggerDailyNotificationCheck = function() {
+            const emailOutbox = document.getElementById('emailOutbox');
+            const emptyMessage = document.getElementById('emptyOutboxMessage');
+            
+            let matchedAlerts = [];
+
+            items.forEach(item => {
+                const daysLeft = calculateDaysRemaining(item.expiryDate);
+                if (item.alertWindows && item.alertWindows.includes(daysLeft)) {
+                    matchedAlerts.push({ item: item, daysLeft: daysLeft });
+                }
+            });
+
+            if (matchedAlerts.length === 0) {
+                showDialog("Alarm System Check", "All items are in healthy condition. No upcoming alert windows hit today.", "info");
+                return;
+            }
+
+            if (emptyMessage) emptyMessage.style.display = 'none';
+
+            matchedAlerts.forEach(match => {
+                // Prepend rendered log
+                const emailLog = createEmailLogDOM(match.item, match.daysLeft);
+                emailOutbox.insertBefore(emailLog, emailOutbox.firstChild);
+
+                // Pipe to external custom webhook if present
+                if (profile.webhook && profile.webhook.trim() !== "") {
+                    triggerExternalWebhookAPI(match.item, match.daysLeft);
+                }
+            });
+
+            showDialog("Dispatched System Alarms", `Identified ${matchedAlerts.length} alarm windows. Custom HTML logs generated and queued.`, "success");
+        };
+
+        function createEmailLogDOM(item, daysLeft) {
+            const mail = document.createElement('div');
+            const categoryLabel = getCategoryDetails(item.category).label;
+            const nowString = new Date().toLocaleString();
+            const recipient = auth.currentUser?.email || "anonymous-guest@domain.com";
+
+            mail.className = "bg-slate-950 border border-slate-850 rounded-xl p-4 text-xs space-y-2 animate-in fade-in slide-in-from-top-4 duration-200";
+            mail.innerHTML = `
+                <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+                    <div class="flex items-center space-x-1">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500 animate-pulse"></span>
+                        <span class="font-bold text-indigo-400 font-mono">SMTP MAIL GATEWAY</span>
+                    </div>
+                    <span class="text-[10px] text-slate-500">${nowString}</span>
+                </div>
+                <div class="space-y-1 text-slate-300">
+                    <div><strong class="text-slate-500 text-[10px] uppercase">To:</strong> <span class="text-white font-medium">${recipient}</span></div>
+                    <div><strong class="text-slate-500 text-[10px] uppercase">Subject:</strong> <span class="text-rose-400 font-bold">🚨 LifeSync Alarm: "${escapeHtml(item.name)}" due in ${daysLeft} days!</span></div>
+                </div>
+                <div class="bg-slate-900 border border-slate-800 p-2 rounded text-[10px] font-mono leading-relaxed text-slate-400">
+                    Hello user,<br><br>
+                    Your tracked schedule <strong class="text-slate-200">"${escapeHtml(item.name)}"</strong> falls inside your warning rule of <strong>${daysLeft} days</strong> remaining.<br><br>
+                    <strong>Schedule Expiry:</strong> ${item.expiryDate}<br>
+                    <strong>Category:</strong> ${categoryLabel}<br>
+                    <strong>Notes:</strong> ${escapeHtml(item.notes) || "None"}
+                </div>
+            `;
+            return mail;
+        }
+
+        async function triggerExternalWebhookAPI(item, daysLeft) {
+            const payload = {
+                event: "expiration_alert",
+                item: item.name,
+                daysRemaining: daysLeft,
+                expiryDate: item.expiryDate,
+                notes: item.notes || "",
+                category: item.category,
+                user: auth.currentUser?.email || "anonymous"
+            };
+
+            try {
+                await fetch(profile.webhook, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.error("External webhook post error:", err);
+            }
+        }
+
+        window.clearOutbox = function() {
+            document.getElementById('emailOutbox').innerHTML = `
+                <div class="h-full flex flex-col items-center justify-center text-center p-4" id="emptyOutboxMessage">
+                    <svg class="w-12 h-12 text-slate-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v4.5m12+3a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    <p class="text-xs font-semibold text-slate-500">No email alerts triggered today.</p>
+                </div>
+            `;
+        };
+
+        // --- WRITING TO CLOUD DATABASE ---
+        async function handleFormSubmit(event) {
+            event.preventDefault();
+
+            const userId = auth.currentUser?.uid;
+            if (!userId) return;
+
+            const id = document.getElementById('itemId').value || 'item-' + Date.now();
+            const name = document.getElementById('itemName').value;
+            const category = document.getElementById('itemCategory').value;
+            const expiryDate = document.getElementById('itemExpiryDate').value;
+            const recurrence = document.getElementById('itemRecurrence').value;
+            const notes = document.getElementById('itemNotes').value;
+
+            const alertWindows = [];
+            if (document.getElementById('alert30').checked) alertWindows.push(30);
+            if (document.getElementById('alert7').checked) alertWindows.push(7);
+            if (document.getElementById('alert1').checked) alertWindows.push(1);
+
+            const payload = {
+                id,
+                name,
+                category,
+                expiryDate,
+                recurrence,
+                notes,
+                alertWindows,
+                lastCompleted: null
+            };
+
+            try {
+                // Rule 1 strict document path
+                const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', id);
+                await setDoc(itemDocRef, payload);
+
+                closeModal('addItemModal');
+                showDialog("Cloud Synchronized", `"${name}" uploaded successfully.`, "success");
+            } catch(e) {
+                console.error("Firestore Save Error:", e);
+                showDialog("Failed to Sync", "Verify your Firestore rules match user constraints.", "error");
+            }
+        }
+
+        async function completeOrRenewItem(itemId) {
+            const userId = auth.currentUser?.uid;
+            if (!userId) return;
+
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            if (item.recurrence === 'none') {
+                showDialogConfirm(
+                    "Finish Tracking Item?",
+                    `"${item.name}" has no recurrence window. Check off will archive/delete this record from the cloud.`,
+                    async () => {
+                        try {
+                            const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
+                            await deleteDoc(itemDocRef);
+                        } catch(e) {
+                            showDialog("Write Protection Fail", "Error clearing non-recurring doc.", "error");
+                        }
+                    }
+                );
+            } else {
+                // Recurrence date forward shifting
+                const currentExpiry = new Date(item.expiryDate);
+                let nextExpiry = new Date(currentExpiry);
+
+                switch (item.recurrence) {
+                    case 'weekly': nextExpiry.setDate(currentExpiry.getDate() + 7); break;
+                    case 'monthly': nextExpiry.setMonth(currentExpiry.getMonth() + 1); break;
+                    case '3months': nextExpiry.setMonth(currentExpiry.getMonth() + 3); break;
+                    case '6months': nextExpiry.setMonth(currentExpiry.getMonth() + 6); break;
+                    case 'yearly': nextExpiry.setFullYear(currentExpiry.getFullYear() + 1); break;
+                    case '2years': nextExpiry.setFullYear(currentExpiry.getFullYear() + 2); break;
+                }
+
+                const nextDateString = nextExpiry.toISOString().split('T')[0];
+                const oldDate = item.expiryDate;
+
+                try {
+                    const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
+                    await setDoc(itemDocRef, {
+                        ...item,
+                        expiryDate: nextDateString,
+                        lastCompleted: new Date().toISOString().split('T')[0]
+                    });
+
+                    showDialog("📅 Renewed Cloud Target", `Successfully rolled "${item.name}" deadline from ${oldDate} forward to ${nextDateString}.`, "success");
+                } catch(e) {
+                    showDialog("Database Write Error", "Unable to renew recurring date target.", "error");
+                }
+            }
+        }
+
+        async function confirmItemDelete(itemId) {
+            const userId = auth.currentUser?.uid;
+            if (!userId) return;
+
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            showDialogConfirm(
+                "Delete Database Document?",
+                `Delete "${item.name}"? This deletes the cloud document permanently.`,
+                async () => {
+                    try {
+                        const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
+                        await deleteDoc(itemDocRef);
+                    } catch(e) {
+                        showDialog("Access Denied", "Error purging item doc.", "error");
+                    }
+                }
+            );
+        }
+
+        function editItem(itemId) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            document.getElementById('itemId').value = item.id;
+            document.getElementById('itemName').value = item.name;
+            document.getElementById('itemCategory').value = item.category;
+            document.getElementById('itemExpiryDate').value = item.expiryDate;
+            document.getElementById('itemRecurrence').value = item.recurrence;
+            document.getElementById('itemNotes').value = item.notes || '';
+
+            document.getElementById('alert30').checked = item.alertWindows ? item.alertWindows.includes(30) : false;
+            document.getElementById('alert7').checked = item.alertWindows ? item.alertWindows.includes(7) : false;
+            document.getElementById('alert1').checked = item.alertWindows ? item.alertWindows.includes(1) : false;
+
+            document.getElementById('modalTitle').textContent = "Edit Tracked Item";
+            toggleRecurrenceHelper();
+            openModal('addItemModal');
+        }
+
+        async function saveProfileSettings() {
+            const userId = auth.currentUser?.uid;
+            if (!userId) return;
+
+            const webhookIn = document.getElementById('webhookInput').value;
+
+            try {
+                // Rule 1 path compliance
+                const profileDocRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile');
+                await setDoc(profileDocRef, { webhook: webhookIn });
+
+                showDialog("Sync Complete", "Webhook profile configuration updated on the cloud database.", "success");
+            } catch(e) {
+                showDialog("Permission Denied", "Unable to update cloud settings profile.", "error");
+            }
+        }
+
+        // --- ACCOUNT AUTH HANDLERS ---
+        window.handleAuthSubmit = async function(event) {
+            event.preventDefault();
+            const email = document.getElementById('authEmail').value;
+            const password = document.getElementById('authPassword').value;
+
+            try {
+                if (isSignUpMode) {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    showDialog("Welcome!", "Account created. Click 'Track New Item' to begin cloud scheduling.", "success");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, password);
+                }
+            } catch(err) {
+                console.error("Auth Exception:", err);
+                let text = "Check credentials and try again.";
+                if (err.code === "auth/weak-password") text = "Password must be at least 6 characters.";
+                if (err.code === "auth/email-already-in-use") text = "Account already exists under this email.";
+                showDialog("Authentication Failed", text, "error");
+            }
+        };
+
+        window.signInAnonymouslyFallback = async function() {
+            try {
+                await signInAnonymously(auth);
+            } catch(e) {
+                console.error(e);
+                showDialog("Sign In Blocked", "Anonymous access disabled on your Firebase configuration.", "error");
+            }
+        };
+
+        window.handleLogout = async function() {
+            try {
+                await signOut(auth);
+            } catch(e) {
+                console.error(e);
+            }
+        };
+
+        // --- FIREBASE CONNECTION HANDLERS ---
+        window.saveFirebaseConfigSetup = function() {
+            const rawJson = document.getElementById('setupConfigInput').value;
+            try {
+                const parsed = JSON.parse(rawJson);
+                if (!parsed.apiKey || !parsed.projectId) {
+                    showDialog("Validation Error", "Missing parameters in your JSON object.", "error");
+                    return;
+                }
+
+                localStorage.setItem('lifesync_firebase_config_v2', JSON.stringify(parsed));
+                document.getElementById('setupScreen').classList.add('hidden');
+                
+                // Reboot lifecycle
+                initLifecycle();
+            } catch(e) {
+                showDialog("Invalid JSON", "Check for straight quotation marks and valid bracket closures.", "error");
+            }
+        };
+
+        window.disconnectFirebaseConfig = function() {
+            showDialogConfirm(
+                "Disconnect Database?",
+                "This will wipe your active database connection configuration from local memory. Do you wish to proceed?",
+                () => {
+                    localStorage.removeItem('lifesync_firebase_config_v2');
+                    location.reload();
+                }
+            );
+        };
+
+        // --- EXPORT FUNCTION ---
+        window.exportCloudData = function() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `lifesync_cloud_backup_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchorElem.click();
+        };
+
+        // --- VIEWPORT CONTROLS & HELPERS ---
+        window.setCategoryFilter = function(category) {
+            currentFilter = category;
+            const pills = document.querySelectorAll('.category-filter');
+            pills.forEach(pill => {
+                const target = pill.getAttribute('data-category');
+                if (target === category) {
+                    pill.className = 'category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-indigo-600/20 border-indigo-500/50 text-indigo-300';
+                } else {
+                    pill.className = 'category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600';
+                }
+            });
+            renderDashboardUI();
+        };
+
+        window.toggleAuthMode = function() {
+            isSignUpMode = !isSignUpMode;
+            const title = document.getElementById('authSubmitBtn');
+            const toggle = document.getElementById('authToggleBtn');
+            if (isSignUpMode) {
+                title.textContent = "Sign Up";
+                toggle.textContent = "Already have an account? Sign In";
+            } else {
+                title.textContent = "Sign In";
+                toggle.textContent = "Don't have an account? Sign Up";
+            }
+        };
+
+        window.toggleRecurrenceHelper = function() {
+            const freq = document.getElementById('itemRecurrence').value;
+            const help = document.getElementById('recurrenceHelpText');
+            help.textContent = freq === 'none' ? "Once marked complete, the document is archived." : "Deadline auto-rolls forward on completion.";
+        };
+
+        window.openModal = function(id) {
+            const modal = document.getElementById(id);
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+            if (id === 'addItemModal') {
+                resetFormFields();
+            }
+        };
+
+        function resetFormFields() {
+            document.getElementById('itemId').value = '';
+            document.getElementById('itemName').value = '';
+            document.getElementById('itemCategory').value = 'me';
+            document.getElementById('itemExpiryDate').value = '';
+            document.getElementById('itemRecurrence').value = 'none';
+            document.getElementById('itemNotes').value = '';
+            document.getElementById('alert30').checked = true;
+            document.getElementById('alert7').checked = true;
+            document.getElementById('alert1').checked = true;
+            document.getElementById('modalTitle').textContent = "Track New Item";
+        }
+
+        window.showDialog = function(title, message, type = 'info') {
+            const modal = document.getElementById('dialogModal');
+            document.getElementById('dialogTitle').textContent = title;
+            document.getElementById('dialogMessage').textContent = message;
+            document.getElementById('dialogBtnSecondary').classList.add('hidden');
+
+            const iconEl = document.getElementById('dialogIcon');
+            if (type === 'success') {
+                iconEl.innerHTML = `<svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            } else if (type === 'error') {
+                iconEl.innerHTML = `<svg class="w-12 h-12 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+            } else {
+                iconEl.innerHTML = `<svg class="w-12 h-12 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+            }
+
+            document.getElementById('dialogBtnPrimary').onclick = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        window.showDialogConfirm = function(title, message, onConfirm) {
+            const modal = document.getElementById('dialogModal');
+            document.getElementById('dialogTitle').textContent = title;
+            document.getElementById('dialogMessage').textContent = message;
+            document.getElementById('dialogBtnSecondary').classList.remove('hidden');
+
+            document.getElementById('dialogIcon').innerHTML = `
+                <svg class="w-12 h-12 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+            `;
+
+            document.getElementById('dialogBtnPrimary').onclick = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                if (onConfirm) onConfirm();
+            };
+
+            document.getElementById('dialogBtnSecondary').onclick = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+            };
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        };
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return "";
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
