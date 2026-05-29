@@ -34,9 +34,68 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col antialiased">
 
+    <!-- FIRST-RUN CHOICE SCREEN (Allows selecting Local Offline vs Cloud Storage mode on first visit) -->
+    <div id="choiceScreen" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl p-6 md:p-8 shadow-2xl space-y-8 animate-in fade-in zoom-in-95 duration-150">
+            
+            <!-- Header Section -->
+            <div class="text-center space-y-2">
+                <div class="inline-flex p-3 bg-indigo-600/10 text-indigo-400 rounded-2xl border border-indigo-500/20 mx-auto">
+                    <!-- Brand Hourglass Logo -->
+                    <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide mt-2">Welcome to LifeSync Pro</h2>
+                <p class="text-sm text-slate-400 max-w-md mx-auto">Track medication, pet care schedules, vehicle insurance, and subscriptions. Choose how you want to save your data:</p>
+            </div>
+
+            <!-- Choice Card Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                
+                <!-- OPTION A: LOCAL MODE -->
+                <button onclick="selectStorageMode('local')" class="group text-left bg-slate-950 hover:bg-slate-900 border border-slate-850 hover:border-indigo-500/50 p-6 rounded-2xl transition duration-200 flex flex-col justify-between space-y-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-900 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-950/20 rounded-xl w-fit border border-slate-800 transition duration-250">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Offline Local Storage</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Fast and 100% private. Data is saved directly on this web browser. No accounts or registrations required.</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">
+                        Start Offline &rarr;
+                    </span>
+                </button>
+
+                <!-- OPTION B: CLOUD MODE -->
+                <button onclick="selectStorageMode('cloud')" class="group text-left bg-slate-950 hover:bg-slate-900 border border-slate-850 hover:border-indigo-500/50 p-6 rounded-2xl transition duration-200 flex flex-col justify-between space-y-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-900 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-950/20 rounded-xl w-fit border border-slate-800 transition duration-250">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                            </svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Real-time Cloud Sync</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Sync perfectly across your phone, laptop, and tablet. Secure login protects data inside your personal Google Firebase cloud.</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">
+                        Configure Cloud Setup &rarr;
+                    </span>
+                </button>
+
+            </div>
+
+            <div class="text-center">
+                <p class="text-[10px] text-slate-600">You can easily switch modes, export, or migrate your local items to the cloud anytime from settings.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- SETUP SCREEN (Only visible if Firebase Config is missing on custom deploys) -->
     <div id="setupScreen" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-150">
             <div class="flex items-center space-x-3">
                 <div class="p-3 bg-indigo-600/10 text-indigo-400 rounded-xl border border-indigo-500/20">
                     <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -64,7 +123,10 @@
                 <textarea id="setupConfigInput" rows="5" placeholder='{&#10;  "apiKey": "AIzaSy...",&#10;  "authDomain": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 font-mono text-xs text-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition"></textarea>
             </div>
 
-            <div class="flex justify-end pt-2">
+            <div class="flex justify-between items-center pt-2">
+                <button onclick="changeMindReturnToChoice()" class="text-xs text-slate-400 hover:text-white font-semibold">
+                    &larr; Return to Local Mode
+                </button>
                 <button onclick="saveFirebaseConfigSetup()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-indigo-600/20 transition">
                     Connect & Initialize
                 </button>
@@ -74,7 +136,7 @@
 
     <!-- AUTHENTICATION SCREEN (Login/Registration with premium dark visual glassmorphism) -->
     <div id="authScreen" class="hidden fixed inset-0 z-40 bg-slate-950 flex flex-col items-center justify-center p-4">
-        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl space-y-6">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-150">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-indigo-600/10 text-indigo-400 rounded-2xl border border-indigo-500/20 mx-auto">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -116,13 +178,18 @@
                 <div class="flex-grow border-t border-slate-800"></div>
             </div>
 
-            <button onclick="signInAnonymouslyFallback()" class="w-full bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-xs font-semibold py-2.5 rounded-lg transition">
-                ⚡ Anonymous Quick Access
-            </button>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="signInAnonymouslyFallback()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs font-semibold py-2.5 rounded-lg transition">
+                    ⚡ Guest Sync
+                </button>
+                <button onclick="changeMindReturnToChoice()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-400 text-xs font-semibold py-2.5 rounded-lg transition">
+                    📍 Go Offline
+                </button>
+            </div>
         </div>
     </div>
 
-    <!-- MAIN APP DASHBOARD INTERFACE (Rendered once auth is successful) -->
+    <!-- MAIN APP DASHBOARD INTERFACE (Rendered once auth is successful or Local Mode chosen) -->
     <div id="mainDashboard" class="hidden flex-col flex-grow">
         <!-- TOP NAVIGATION HEADER -->
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
@@ -135,7 +202,7 @@
                     </div>
                     <div>
                         <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                            LifeSync <span class="text-xs bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
+                            LifeSync <span id="syncBadge" class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
                         </h1>
                         <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
                     </div>
@@ -154,7 +221,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                         </svg>
                     </button>
-                    <button onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="Sign Out">
+                    <button id="logoutBtn" onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="Sign Out">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                         </svg>
@@ -326,7 +393,7 @@
                     <div>
                         <h3 class="text-sm font-bold text-white flex items-center gap-2">
                             <span>🚀 Cloud Notification Integrations</span>
-                            <span class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Firestore Live</span>
+                            <span id="cloudStatusBadge" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Active</span>
                         </h3>
                         <p class="text-xs text-slate-400 mt-1 mb-4">Set up a Make/Zapier webhook to turn these simulation logs into actual emails directly inside your personal mailbox.</p>
 
@@ -338,10 +405,10 @@
                             
                             <div class="bg-slate-950/50 border border-slate-800/80 rounded-lg p-3 text-xs space-y-2">
                                 <p class="font-semibold text-slate-200 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> Live Synchronization Active
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> System Connection Guard
                                 </p>
-                                <p class="text-slate-400 text-[11px] leading-relaxed">
-                                    Your medications and insurance policies are synced with Google Cloud. Feel free to open this page on your phone simultaneously; any changes will write back instantly without page refresh!
+                                <p id="modeDescriptionTag" class="text-slate-400 text-[11px] leading-relaxed">
+                                    Schedules are secured directly inside your local cache storage.
                                 </p>
                             </div>
                         </div>
@@ -349,7 +416,7 @@
 
                     <div class="pt-4 border-t border-slate-800 flex justify-between items-center">
                         <span class="text-[11px] text-indigo-400 font-semibold" id="cloudStatusTag">Sync status: Active</span>
-                        <button onclick="saveProfileSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition">Save Webhook</button>
+                        <button onclick="saveProfileSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition">Save Settings</button>
                     </div>
                 </div>
 
@@ -361,9 +428,9 @@
     <!-- FOOTER -->
     <footer class="border-t border-slate-800 bg-slate-950 py-6 mt-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs text-slate-500">&copy; 2026 LifeSync Pro Cloud. Secure personal expiration sandbox.</p>
+            <p class="text-xs text-slate-500">&copy; 2026 LifeSync Pro. Secure personal expiration sandbox.</p>
             <div class="flex space-x-4 text-xs text-slate-400">
-                <button onclick="disconnectFirebaseConfig()" class="hover:text-rose-400 text-slate-500 transition">Disconnect Firebase</button>
+                <button onclick="disconnectStorageMode()" class="hover:text-rose-400 text-slate-500 transition">Reset Storage Choice</button>
             </div>
         </div>
     </footer>
@@ -460,7 +527,7 @@
             <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
                     <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
-                    <span>Cloud Configuration & User Profile</span>
+                    <span>System Settings & Storage Drivers</span>
                 </h3>
                 <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
@@ -469,21 +536,38 @@
 
             <div class="space-y-4 text-xs">
                 <div>
-                    <h4 class="font-semibold text-slate-300 mb-1">Email Recipient</h4>
-                    <input type="email" id="emailInput" readonly class="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-slate-500 cursor-not-allowed" />
+                    <h4 class="font-semibold text-slate-300 mb-1">Email Recipient Address</h4>
+                    <input type="email" id="emailInput" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
 
+                <!-- Backup Utility -->
                 <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
-                    <h4 class="font-semibold text-slate-300">Firestore Migration Backups</h4>
-                    <p class="text-[10px] text-slate-500 leading-normal">Your custom data resides inside Google Firestore. You can export a copy of all current documents for safe keeping.</p>
+                    <h4 class="font-semibold text-slate-300">Data Backups & Migrations</h4>
+                    <p class="text-[10px] text-slate-500 leading-normal">Your custom data resides inside your active storage engine. You can export a copy of all current documents for safekeeping.</p>
                     <div class="flex gap-2 mt-2">
-                        <button onclick="exportCloudData()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Export Backup</button>
+                        <button onclick="exportActiveBackupData()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Export Backup</button>
+                        <button id="importBtn" onclick="triggerImportSelection()" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Import Backup</button>
+                        <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackupData(event)">
                     </div>
                 </div>
 
+                <!-- ACTIVE MODE UPGRADE/MIGRATION CARD -->
+                <div id="localUpgradeBanner" class="hidden bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-xl space-y-2">
+                    <h4 class="font-bold text-white text-xs">🚀 Move to Cloud Syncing</h4>
+                    <p class="text-[10px] text-slate-400">Want to track schedules on both your phone and laptop? Connect a free Google Firebase database to access safe cross-device sync. Your local items can be easily migrated!</p>
+                    <button onclick="switchToCloudMode()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-1.5 rounded text-[11px] transition">Upgrade to Cloud Sync</button>
+                </div>
+
+                <div id="cloudDisconnectBanner" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-white text-xs">☁️ Cloud Integration Active</h4>
+                    <p class="text-[10px] text-slate-400">Your expiration schedules are synchronized in real-time. Want to disconnect cloud services and switch strictly to local device storage?</p>
+                    <button onclick="switchToLocalMode()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-semibold py-1.5 rounded text-[11px] transition">Disconnect Cloud Sync</button>
+                </div>
+
+                <!-- Footer Actions -->
                 <div class="flex items-center justify-between pt-3 border-t border-slate-800">
-                    <button onclick="handleLogout()" class="text-rose-500 hover:text-rose-400 font-semibold">Sign Out Account</button>
-                    <button onclick="closeModal('settingsModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold transition">Close</button>
+                    <button onclick="wipeCurrentData()" class="text-rose-500 hover:text-rose-400 font-semibold">Delete Storage Data</button>
+                    <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold transition">Save Profile</button>
                 </div>
             </div>
         </div>
@@ -529,15 +613,56 @@
         // Global parameters provided by preview engine
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'lifesync-cloud-tracker';
 
-        // Fallback default mock database parameters
-        const defaultFirebaseMock = {
-            apiKey: "mock-apiKey-placeholder-replace-me",
-            authDomain: "mock-authDomain-placeholder-replace-me",
-            projectId: "mock-projectId",
-            storageBucket: "mock-storageBucket",
-            messagingSenderId: "mock-messaging",
-            appId: "mock-app"
-        };
+        // Seed data offset helper generator
+        function getOffsetDateString(daysOffset) {
+            const date = new Date();
+            date.setDate(date.getDate() + daysOffset);
+            return date.toISOString().split('T')[0];
+        }
+
+        // Offline default seed mock data
+        const DEFAULT_SEED_DATA = [
+            {
+                id: "seed-1",
+                name: "RCA Auto Insurance Renewal",
+                category: "vehicle",
+                expiryDate: getOffsetDateString(4),
+                recurrence: "yearly",
+                alertWindows: [30, 7, 1],
+                notes: "Vehicle: Ford Focus. Double check premium comparison before renewing on insurance portal.",
+                lastCompleted: null
+            },
+            {
+                id: "seed-2",
+                name: "Monthly Dewormer Treatment (Rex)",
+                category: "dog",
+                expiryDate: getOffsetDateString(10),
+                recurrence: "monthly",
+                alertWindows: [7, 1],
+                notes: "Heartgard pill. Rex must swallow it whole with meals.",
+                lastCompleted: null
+            },
+            {
+                id: "seed-3",
+                name: "Prescription Thyroid Refill (Me)",
+                category: "me",
+                expiryDate: getOffsetDateString(3),
+                recurrence: "monthly",
+                alertWindows: [7, 1],
+                notes: "Daily 50mcg dose. Order online from local pharmacy.",
+                lastCompleted: null
+            },
+            {
+                id: "seed-4",
+                name: "VPN Premium Subscription Renewal",
+                category: "subscription",
+                expiryDate: getOffsetDateString(45),
+                recurrence: "yearly",
+                alertWindows: [30, 7],
+                notes: "Auto-charged from visa. Cancel if not used frequently.",
+                lastCompleted: null
+            }
+        ];
 
         let app, auth, db;
         let items = [];
@@ -547,86 +672,178 @@
         let activeFirestoreUnsubscribe = null;
         let activeProfileUnsubscribe = null;
 
-        // On window load, check config parameters
+        // On window load, check configuration state
         window.onload = function() {
+            initLifecycle();
+        };
+
+        // Onboarding / Selector handler
+        window.selectStorageMode = function(mode) {
+            localStorage.setItem('lifesync_storage_mode', mode);
+            document.getElementById('choiceScreen').classList.add('hidden');
+            initLifecycle();
+        };
+
+        window.changeMindReturnToChoice = function() {
+            localStorage.removeItem('lifesync_storage_mode');
+            document.getElementById('setupScreen').classList.add('hidden');
+            document.getElementById('authScreen').classList.add('hidden');
             initLifecycle();
         };
 
         // Core initialization loop
         async function initLifecycle() {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+
+            // 1. If first run, present selection onboarding overlay
+            if (!storageMode) {
+                document.getElementById('choiceScreen').classList.remove('hidden');
+                document.getElementById('choiceScreen').classList.add('flex');
+                return;
+            }
+
+            // 2. Load Local Storage Driver
+            if (storageMode === 'local') {
+                setupLocalOfflineLifecycle();
+                return;
+            }
+
+            // 3. Load Cloud Sync Driver
+            if (storageMode === 'cloud') {
+                setupCloudLifecycle();
+            }
+        }
+
+        // --- LOCAL STORAGE MODE LIFECYCLE ---
+        function setupLocalOfflineLifecycle() {
+            // Adjust visual banners and state tags
+            document.getElementById('mainDashboard').classList.remove('hidden');
+            document.getElementById('mainDashboard').classList.add('flex');
+            document.getElementById('syncBadge').textContent = "Offline Local";
+            document.getElementById('syncBadge').className = "text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full font-normal";
+            
+            document.getElementById('userEmailTag').innerHTML = `📍 Local Offline Storage (<button onclick="switchToCloudMode()" class="text-indigo-400 hover:underline font-semibold">Connect Cloud Sync</button>)`;
+            document.getElementById('cloudStatusBadge').textContent = "Offline Storage";
+            document.getElementById('cloudStatusBadge').className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700";
+            document.getElementById('modeDescriptionTag').textContent = "Your expiration items are saved inside this browser's physical cache memory. Connect a database from settings to sync across multiple screens.";
+            document.getElementById('cloudStatusTag').textContent = "Status: Cache memory driver active";
+            document.getElementById('logoutBtn').classList.add('hidden'); // hide account session logouts in offline mode
+
+            // Sync settings banners
+            document.getElementById('localUpgradeBanner').classList.remove('hidden');
+            document.getElementById('cloudDisconnectBanner').classList.add('hidden');
+
+            // Load user simulated settings recipient email
+            const simulatedEmail = localStorage.getItem('lifesync_simulated_email') || "local-user@device.local";
+            document.getElementById('emailInput').value = simulatedEmail;
+            document.getElementById('emailInput').readOnly = false; // let them configure local simulation addresses
+
+            // Load active offline tracked items array
+            const storedLocalItems = localStorage.getItem('lifesync_local_items');
+            if (storedLocalItems) {
+                try {
+                    items = JSON.parse(storedLocalItems);
+                } catch(e) {
+                    items = [...DEFAULT_SEED_DATA];
+                }
+            } else {
+                items = [...DEFAULT_SEED_DATA];
+                localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+            }
+
+            // Sync local webhook settings
+            const localWebhook = localStorage.getItem('lifesync_local_webhook') || "";
+            profile = { webhook: localWebhook };
+            document.getElementById('webhookInput').value = profile.webhook;
+
+            renderDashboardUI();
+        }
+
+        // --- CLOUD SYNCING MODE LIFECYCLE ---
+        async function setupCloudLifecycle() {
             let activeConfig = null;
 
-            // 1. Check if Canvas environment-provided config exists
+            // Sync settings banners
+            document.getElementById('localUpgradeBanner').classList.add('hidden');
+            document.getElementById('cloudDisconnectBanner').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+
+            // Check if Canvas environment-provided Firebase settings exist
             if (typeof __firebase_config !== 'undefined' && __firebase_config) {
                 try {
                     activeConfig = JSON.parse(__firebase_config);
                 } catch (e) {
-                    console.error("Invalid preview configuration parameter", e);
+                    console.error("Invalid preview configuration", e);
                 }
             }
 
-            // 2. Check if local custom configuration is saved in browser memory
+            // Fallback to local stored keys from previous session setup
             if (!activeConfig) {
                 const storedConfig = localStorage.getItem('lifesync_firebase_config_v2');
                 if (storedConfig) {
                     try {
                         activeConfig = JSON.parse(storedConfig);
                     } catch (e) {
-                        console.error("Invalid locally saved configuration data");
+                        console.error("Invalid locally saved config cache");
                     }
                 }
             }
 
-            // 3. Render setup wizard screen if no database configuration is present
+            // If config is completely missing, prompt cloud setup wizard
             if (!activeConfig) {
                 document.getElementById('setupScreen').classList.remove('hidden');
+                document.getElementById('setupScreen').classList.add('flex');
                 return;
             }
 
-            // Configure Firebase with active configuration
+            // Connect Firebase Core
             try {
                 app = initializeApp(activeConfig);
                 auth = getAuth(app);
                 db = getFirestore(app);
 
-                // Run Auth listener to determine current view state
+                // Initialize authentication listeners
                 setupAuthenticationListener();
             } catch (err) {
-                console.error("Database connection failure:", err);
-                showDialog("Database Connection Error", "The Firebase configurations entered could not initialize. Try correcting your JSON input or clearing your settings.", "error");
+                console.error("Firebase connection error:", err);
+                showDialog("Connection Failure", "Could not initialize Google Firestore with the provided credentials. Return to offline or re-configure JSON.", "error");
                 document.getElementById('setupScreen').classList.remove('hidden');
             }
         }
 
-        // Authentication handler (Ensures RULE 3 compliance: Auth precedes any Firestore actions)
+        // Authentication lifecycle watcher (Rule 3 prioritizes Auth execution prior to reads)
         async function setupAuthenticationListener() {
-            // Trigger automatic Custom Token connection if environment provides a standard runtime token
             if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
                 try {
                     await signInWithCustomToken(auth, __initial_auth_token);
                 } catch(e) {
-                    console.warn("Failed custom token initialization fallback", e);
+                    console.warn("Custom token session authentication bypassed", e);
                 }
             }
 
             onAuthStateChanged(auth, async (user) => {
                 if (user) {
-                    // Update user display configurations
+                    // Update main screen parameters
                     document.getElementById('authScreen').classList.add('hidden');
                     document.getElementById('setupScreen').classList.add('hidden');
                     document.getElementById('mainDashboard').classList.remove('hidden');
                     document.getElementById('mainDashboard').classList.add('flex');
-                    document.getElementById('userEmailTag').textContent = user.isAnonymous ? "Anonymous Guest Account" : `Logged in: ${user.email}`;
+                    
+                    document.getElementById('syncBadge').textContent = "Cloud Synced";
+                    document.getElementById('syncBadge').className = "text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-normal";
+                    document.getElementById('userEmailTag').textContent = user.isAnonymous ? "Anonymous Guest Sync" : `Logged in: ${user.email}`;
                     document.getElementById('emailInput').value = user.isAnonymous ? "guest-mode@domain.com" : user.email;
+                    document.getElementById('emailInput').readOnly = true;
 
-                    // Bind Firestore updates once authenticated (RULE 3 compliance)
+                    // Bind Firestore collections
                     bindRealtimeFirestoreCollections(user.uid);
+
+                    // Check for local offline tracking items from a previous local storage run and prompt migration
+                    checkAndPromptLocalToCloudMigration(user.uid);
                 } else {
-                    // Tear down previous listeners
                     if (activeFirestoreUnsubscribe) activeFirestoreUnsubscribe();
                     if (activeProfileUnsubscribe) activeProfileUnsubscribe();
 
-                    // Display auth login pane
                     document.getElementById('mainDashboard').classList.add('hidden');
                     document.getElementById('setupScreen').classList.add('hidden');
                     document.getElementById('authScreen').classList.remove('hidden');
@@ -634,30 +851,32 @@
             });
         }
 
-        // Firestore Real-Time Subscriptions (Uses strictly compliant paths - RULE 1)
+        // Real-time Cloud Subscriptions (Rule 1 strict structure paths)
         function bindRealtimeFirestoreCollections(userId) {
-            // Define paths utilizing Rule 1: /artifacts/{appId}/users/{userId}/{collectionName}
             const itemsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'items');
             const profileDocRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile');
 
-            // Set up real-time listener for user items
-            // No compound query constraints used to maintain compatibility (RULE 2 compliance)
+            document.getElementById('cloudStatusBadge').textContent = "Cloud Active";
+            document.getElementById('cloudStatusBadge').className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30";
+            document.getElementById('modeDescriptionTag').textContent = "Your expiration items are synchronized across your devices. Tap Simulate Daily Alarm Check to process system alerts.";
+            document.getElementById('cloudStatusTag').textContent = "Status: Firestore live synchronization active";
+
+            // Sync user tracked items (Rule 2 mandates client-side sorting)
             activeFirestoreUnsubscribe = onSnapshot(itemsCollectionRef, (snapshot) => {
                 items = [];
                 snapshot.forEach((doc) => {
                     items.push({ id: doc.id, ...doc.data() });
                 });
 
-                // Client-side sorting (RULE 2 requirement - avoid orderBy() in Firestore queries)
+                // Sort array in memory
                 items.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
-
                 renderDashboardUI();
             }, (error) => {
-                console.error("Firestore sync error:", error);
-                showDialog("Data Sync Error", "Failed to load live changes from the cloud. Verify your security permissions.", "error");
+                console.error("Firestore synchronizer error:", error);
+                showDialog("Sync Error", "Cloud read operation restricted. Verify your security permissions.", "error");
             });
 
-            // Set up real-time settings profile configurations
+            // Sync user profile settings
             activeProfileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
                 if (docSnap.exists()) {
                     profile = docSnap.data();
@@ -665,12 +884,44 @@
                     profile = { webhook: "" };
                 }
                 document.getElementById('webhookInput').value = profile.webhook || "";
-            }, (error) => {
-                console.warn("Profile fetch warning:", error);
             });
         }
 
-        // Render functions for the UI Dashboard
+        // Local Storage to Cloud DB Migration Manager
+        function checkAndPromptLocalToCloudMigration(userId) {
+            const localItemsStr = localStorage.getItem('lifesync_local_items');
+            if (localItemsStr) {
+                try {
+                    const localItems = JSON.parse(localItemsStr);
+                    if (localItems && localItems.length > 0) {
+                        showDialogConfirm(
+                            "Migrate Offline Data?",
+                            `We found ${localItems.length} items tracked offline in your browser. Would you like to upload them to your new Cloud Sync account database so they are available on all your screens?`,
+                            async () => {
+                                try {
+                                    // Process migration batch uploads
+                                    for (const item of localItems) {
+                                        const docRef = doc(db, 'artifacts', appId, 'users', userId, 'items', item.id);
+                                        await setDoc(docRef, item);
+                                    }
+                                    
+                                    // Successfully integrated. Flush cache
+                                    localStorage.removeItem('lifesync_local_items');
+                                    showDialog("Migration Complete!", `Synced ${localItems.length} items to your cloud account database.`, "success");
+                                } catch(err) {
+                                    console.error("Migration error:", err);
+                                    showDialog("Migration Exception", "Failed to upload all database records. Check Firebase rule permissions.", "error");
+                                }
+                            }
+                        );
+                    }
+                } catch(e) {
+                    console.warn("Migration parser warning:", e);
+                }
+            }
+        }
+
+        // --- DASHBOARD RENDERING ENGINE ---
         function renderDashboardUI() {
             const colDays = document.getElementById('colDays');
             const colWeeks = document.getElementById('colWeeks');
@@ -797,7 +1048,6 @@
 
             card.className = `group bg-slate-900/60 border ${ringColor} rounded-xl p-4 hover:bg-slate-900 hover:border-slate-700 hover:shadow-xl transition duration-200 relative overflow-hidden`;
             
-            // Render card templates using standard DOM
             card.innerHTML = `
                 <div class="flex items-center justify-between mb-2">
                     <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ${cat.bg}">
@@ -847,7 +1097,6 @@
                 </div>
             `;
 
-            // Bind click handlers directly to element IDs to bypass string execution issues
             card.querySelector(`#btn-edit-${item.id}`).onclick = () => editItem(item.id);
             card.querySelector(`#btn-del-${item.id}`).onclick = () => confirmItemDelete(item.id);
             card.querySelector(`#btn-done-${item.id}`).onclick = () => completeOrRenewItem(item.id);
@@ -855,7 +1104,7 @@
             return card;
         }
 
-        // --- WEBHOOK DISPATCH & EMAIL ALARM EMULATOR ---
+        // --- ALARM TRIGGER ALGORITHMS ---
         window.triggerDailyNotificationCheck = function() {
             const emailOutbox = document.getElementById('emailOutbox');
             const emptyMessage = document.getElementById('emptyOutboxMessage');
@@ -870,31 +1119,36 @@
             });
 
             if (matchedAlerts.length === 0) {
-                showDialog("Alarm System Check", "All items are in healthy condition. No upcoming alert windows hit today.", "info");
+                showDialog("Alarm System Check", "All tracked items are in healthy condition. No warnings match today.", "info");
                 return;
             }
 
             if (emptyMessage) emptyMessage.style.display = 'none';
 
             matchedAlerts.forEach(match => {
-                // Prepend rendered log
                 const emailLog = createEmailLogDOM(match.item, match.daysLeft);
                 emailOutbox.insertBefore(emailLog, emailOutbox.firstChild);
 
-                // Pipe to external custom webhook if present
                 if (profile.webhook && profile.webhook.trim() !== "") {
                     triggerExternalWebhookAPI(match.item, match.daysLeft);
                 }
             });
 
-            showDialog("Dispatched System Alarms", `Identified ${matchedAlerts.length} alarm windows. Custom HTML logs generated and queued.`, "success");
+            showDialog("Alarms Triggered", `Successfully simulated checklist processing. Dispatched ${matchedAlerts.length} SMTP warning draft alerts.`, "success");
         };
 
         function createEmailLogDOM(item, daysLeft) {
             const mail = document.createElement('div');
             const categoryLabel = getCategoryDetails(item.category).label;
             const nowString = new Date().toLocaleString();
-            const recipient = auth.currentUser?.email || "anonymous-guest@domain.com";
+            
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            let recipient = "local-user@device.local";
+            if (storageMode === 'cloud' && auth.currentUser) {
+                recipient = auth.currentUser.email || "anonymous-guest@domain.com";
+            } else {
+                recipient = localStorage.getItem('lifesync_simulated_email') || "local-user@device.local";
+            }
 
             mail.className = "bg-slate-950 border border-slate-850 rounded-xl p-4 text-xs space-y-2 animate-in fade-in slide-in-from-top-4 duration-200";
             mail.innerHTML = `
@@ -907,11 +1161,11 @@
                 </div>
                 <div class="space-y-1 text-slate-300">
                     <div><strong class="text-slate-500 text-[10px] uppercase">To:</strong> <span class="text-white font-medium">${recipient}</span></div>
-                    <div><strong class="text-slate-500 text-[10px] uppercase">Subject:</strong> <span class="text-rose-400 font-bold">🚨 LifeSync Alarm: "${escapeHtml(item.name)}" due in ${daysLeft} days!</span></div>
+                    <div><strong class="text-slate-500 text-[10px] uppercase">Subject:</strong> <span class="text-rose-400 font-bold">🚨 LifeSync Alert: "${escapeHtml(item.name)}" due in ${daysLeft} days!</span></div>
                 </div>
-                <div class="bg-slate-900 border border-slate-800 p-2 rounded text-[10px] font-mono leading-relaxed text-slate-400">
+                <div class="bg-slate-900 border border-slate-850 p-2 rounded text-[10px] font-mono leading-relaxed text-slate-400">
                     Hello user,<br><br>
-                    Your tracked schedule <strong class="text-slate-200">"${escapeHtml(item.name)}"</strong> falls inside your warning rule of <strong>${daysLeft} days</strong> remaining.<br><br>
+                    Your tracked schedule <strong class="text-slate-200">"${escapeHtml(item.name)}"</strong> falls inside your warning threshold of <strong>${daysLeft} days</strong> remaining.<br><br>
                     <strong>Schedule Expiry:</strong> ${item.expiryDate}<br>
                     <strong>Category:</strong> ${categoryLabel}<br>
                     <strong>Notes:</strong> ${escapeHtml(item.notes) || "None"}
@@ -921,6 +1175,7 @@
         }
 
         async function triggerExternalWebhookAPI(item, daysLeft) {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
             const payload = {
                 event: "expiration_alert",
                 item: item.name,
@@ -928,7 +1183,8 @@
                 expiryDate: item.expiryDate,
                 notes: item.notes || "",
                 category: item.category,
-                user: auth.currentUser?.email || "anonymous"
+                driverMode: storageMode,
+                user: storageMode === 'cloud' ? (auth.currentUser?.email || "anonymous") : "local-user"
             };
 
             try {
@@ -953,12 +1209,10 @@
             `;
         };
 
-        // --- WRITING TO CLOUD DATABASE ---
+        // --- CRUD PERSISTENCE ACTIONS ---
         async function handleFormSubmit(event) {
             event.preventDefault();
-
-            const userId = auth.currentUser?.uid;
-            if (!userId) return;
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
 
             const id = document.getElementById('itemId').value || 'item-' + Date.now();
             const name = document.getElementById('itemName').value;
@@ -983,41 +1237,65 @@
                 lastCompleted: null
             };
 
-            try {
-                // Rule 1 strict document path
-                const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', id);
-                await setDoc(itemDocRef, payload);
-
+            // Write to Local Storage
+            if (storageMode === 'local') {
+                const index = items.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    items[index] = payload;
+                } else {
+                    items.push(payload);
+                }
+                localStorage.setItem('lifesync_local_items', JSON.stringify(items));
                 closeModal('addItemModal');
-                showDialog("Cloud Synchronized", `"${name}" uploaded successfully.`, "success");
-            } catch(e) {
-                console.error("Firestore Save Error:", e);
-                showDialog("Failed to Sync", "Verify your Firestore rules match user constraints.", "error");
+                renderDashboardUI();
+                showDialog("Saved Locally", `"${name}" stored securely on this browser.`, "success");
+            } 
+            // Write to Cloud Firestore
+            else {
+                const userId = auth.currentUser?.uid;
+                if (!userId) return;
+
+                try {
+                    const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', id);
+                    await setDoc(itemDocRef, payload);
+
+                    closeModal('addItemModal');
+                    showDialog("Cloud Synchronized", `"${name}" uploaded successfully.`, "success");
+                } catch(e) {
+                    console.error("Firestore save error:", e);
+                    showDialog("Sync Failure", "Verify your user authentication state.", "error");
+                }
             }
         }
 
         async function completeOrRenewItem(itemId) {
-            const userId = auth.currentUser?.uid;
-            if (!userId) return;
-
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
             const item = items.find(i => i.id === itemId);
             if (!item) return;
 
             if (item.recurrence === 'none') {
                 showDialogConfirm(
                     "Finish Tracking Item?",
-                    `"${item.name}" has no recurrence window. Check off will archive/delete this record from the cloud.`,
+                    `"${item.name}" has no recurrence interval. Check off will archive this record.`,
                     async () => {
-                        try {
-                            const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
-                            await deleteDoc(itemDocRef);
-                        } catch(e) {
-                            showDialog("Write Protection Fail", "Error clearing non-recurring doc.", "error");
+                        if (storageMode === 'local') {
+                            items = items.filter(i => i.id !== itemId);
+                            localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                            renderDashboardUI();
+                        } else {
+                            const userId = auth.currentUser?.uid;
+                            if (!userId) return;
+                            try {
+                                const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
+                                await deleteDoc(itemDocRef);
+                            } catch(e) {
+                                showDialog("Access Denied", "Error clearing cloud doc.", "error");
+                            }
                         }
                     }
                 );
             } else {
-                // Recurrence date forward shifting
+                // Shifting deadlines on recurring timelines
                 const currentExpiry = new Date(item.expiryDate);
                 let nextExpiry = new Date(currentExpiry);
 
@@ -1033,37 +1311,56 @@
                 const nextDateString = nextExpiry.toISOString().split('T')[0];
                 const oldDate = item.expiryDate;
 
-                try {
-                    const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
-                    await setDoc(itemDocRef, {
-                        ...item,
-                        expiryDate: nextDateString,
-                        lastCompleted: new Date().toISOString().split('T')[0]
-                    });
+                const updatedItem = {
+                    ...item,
+                    expiryDate: nextDateString,
+                    lastCompleted: new Date().toISOString().split('T')[0]
+                };
 
-                    showDialog("📅 Renewed Cloud Target", `Successfully rolled "${item.name}" deadline from ${oldDate} forward to ${nextDateString}.`, "success");
-                } catch(e) {
-                    showDialog("Database Write Error", "Unable to renew recurring date target.", "error");
+                if (storageMode === 'local') {
+                    const idx = items.findIndex(i => i.id === itemId);
+                    if (idx !== -1) {
+                        items[idx] = updatedItem;
+                    }
+                    localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                    renderDashboardUI();
+                    showDialog("📅 Rolled Date Locally", `Successfully rolled "${item.name}" locally from ${oldDate} forward to ${nextDateString}.`, "success");
+                } else {
+                    const userId = auth.currentUser?.uid;
+                    if (!userId) return;
+                    try {
+                        const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
+                        await setDoc(itemDocRef, updatedItem);
+                        showDialog("📅 Rolled Date Cloud", `Successfully rolled "${item.name}" cloud timeline from ${oldDate} forward to ${nextDateString}.`, "success");
+                    } catch(e) {
+                        showDialog("Database Save Error", "Unable to update cloud doc.", "error");
+                    }
                 }
             }
         }
 
         async function confirmItemDelete(itemId) {
-            const userId = auth.currentUser?.uid;
-            if (!userId) return;
-
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
             const item = items.find(i => i.id === itemId);
             if (!item) return;
 
             showDialogConfirm(
-                "Delete Database Document?",
-                `Delete "${item.name}"? This deletes the cloud document permanently.`,
+                "Delete Tracked Schedule?",
+                `Delete "${item.name}"? This action cannot be undone.`,
                 async () => {
-                    try {
-                        const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
-                        await deleteDoc(itemDocRef);
-                    } catch(e) {
-                        showDialog("Access Denied", "Error purging item doc.", "error");
+                    if (storageMode === 'local') {
+                        items = items.filter(i => i.id !== itemId);
+                        localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                        renderDashboardUI();
+                    } else {
+                        const userId = auth.currentUser?.uid;
+                        if (!userId) return;
+                        try {
+                            const itemDocRef = doc(db, 'artifacts', appId, 'users', userId, 'items', itemId);
+                            await deleteDoc(itemDocRef);
+                        } catch(e) {
+                            showDialog("Access Denied", "Error purging cloud item.", "error");
+                        }
                     }
                 }
             );
@@ -1089,24 +1386,40 @@
             openModal('addItemModal');
         }
 
-        async function saveProfileSettings() {
-            const userId = auth.currentUser?.uid;
-            if (!userId) return;
-
+        // Save Settings (webhook & target configurations)
+        window.saveSettings = async function() {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
             const webhookIn = document.getElementById('webhookInput').value;
 
-            try {
-                // Rule 1 path compliance
-                const profileDocRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile');
-                await setDoc(profileDocRef, { webhook: webhookIn });
+            if (storageMode === 'local') {
+                const simulatedEmailIn = document.getElementById('emailInput').value;
+                localStorage.setItem('lifesync_simulated_email', simulatedEmailIn);
+                localStorage.setItem('lifesync_local_webhook', webhookIn);
+                profile = { webhook: webhookIn };
+                
+                closeModal('settingsModal');
+                showDialog("Profile Preserved", "Your offline webhook parameters and simulated recipient properties have been saved.", "success");
+            } else {
+                const userId = auth.currentUser?.uid;
+                if (!userId) return;
 
-                showDialog("Sync Complete", "Webhook profile configuration updated on the cloud database.", "success");
-            } catch(e) {
-                showDialog("Permission Denied", "Unable to update cloud settings profile.", "error");
+                try {
+                    const profileDocRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile');
+                    await setDoc(profileDocRef, { webhook: webhookIn });
+
+                    closeModal('settingsModal');
+                    showDialog("Cloud Settings Sync", "Settings sync successfully updated on Firestore cloud.", "success");
+                } catch(e) {
+                    showDialog("Permission Error", "Unable to sync profiles on database.", "error");
+                }
             }
-        }
+        };
 
-        // --- ACCOUNT AUTH HANDLERS ---
+        window.saveProfileSettings = async function() {
+            await window.saveSettings();
+        };
+
+        // --- AUTH & LOGIN HANDLERS ---
         window.handleAuthSubmit = async function(event) {
             event.preventDefault();
             const email = document.getElementById('authEmail').value;
@@ -1115,15 +1428,15 @@
             try {
                 if (isSignUpMode) {
                     await createUserWithEmailAndPassword(auth, email, password);
-                    showDialog("Welcome!", "Account created. Click 'Track New Item' to begin cloud scheduling.", "success");
+                    showDialog("Welcome!", "Account setup completed. You're ready to track expiration parameters.", "success");
                 } else {
                     await signInWithEmailAndPassword(auth, email, password);
                 }
             } catch(err) {
-                console.error("Auth Exception:", err);
+                console.error("Auth exception:", err);
                 let text = "Check credentials and try again.";
                 if (err.code === "auth/weak-password") text = "Password must be at least 6 characters.";
-                if (err.code === "auth/email-already-in-use") text = "Account already exists under this email.";
+                if (err.code === "auth/email-already-in-use") text = "Account already exists under this email address.";
                 showDialog("Authentication Failed", text, "error");
             }
         };
@@ -1133,7 +1446,7 @@
                 await signInAnonymously(auth);
             } catch(e) {
                 console.error(e);
-                showDialog("Sign In Blocked", "Anonymous access disabled on your Firebase configuration.", "error");
+                showDialog("Authentication Blocked", "Anonymous access disabled on your Firebase configuration rules.", "error");
             }
         };
 
@@ -1145,47 +1458,164 @@
             }
         };
 
-        // --- FIREBASE CONNECTION HANDLERS ---
+        // --- DRIVER TRANSITIONS / RESET MECHANICS ---
+        window.switchToCloudMode = function() {
+            showDialogConfirm(
+                "Upgrade to Cloud Sync?",
+                "This will switch your app storage driver to Cloud Mode. We will guide you to connect your Firebase account. Would you like to keep your offline items and migrate them to your cloud database?",
+                () => {
+                    localStorage.setItem('lifesync_storage_mode', 'cloud');
+                    closeModal('settingsModal');
+                    location.reload();
+                }
+            );
+        };
+
+        window.switchToLocalMode = function() {
+            showDialogConfirm(
+                "Disconnect Cloud Sync?",
+                "Are you sure you want to switch strictly back to local offline mode? Your cloud items will remain safe in Firestore, but they won't load on this browser. We will load your local items cache instead.",
+                () => {
+                    localStorage.setItem('lifesync_storage_mode', 'local');
+                    closeModal('settingsModal');
+                    location.reload();
+                }
+            );
+        };
+
         window.saveFirebaseConfigSetup = function() {
             const rawJson = document.getElementById('setupConfigInput').value;
             try {
                 const parsed = JSON.parse(rawJson);
                 if (!parsed.apiKey || !parsed.projectId) {
-                    showDialog("Validation Error", "Missing parameters in your JSON object.", "error");
+                    showDialog("Validation Error", "Missing parameters in your JSON configuration file.", "error");
                     return;
                 }
 
                 localStorage.setItem('lifesync_firebase_config_v2', JSON.stringify(parsed));
                 document.getElementById('setupScreen').classList.add('hidden');
-                
-                // Reboot lifecycle
                 initLifecycle();
             } catch(e) {
-                showDialog("Invalid JSON", "Check for straight quotation marks and valid bracket closures.", "error");
+                showDialog("Invalid JSON format", "Double check straight quote marks and brackets.", "error");
             }
         };
 
-        window.disconnectFirebaseConfig = function() {
+        window.disconnectStorageMode = function() {
             showDialogConfirm(
-                "Disconnect Database?",
-                "This will wipe your active database connection configuration from local memory. Do you wish to proceed?",
+                "Reset Storage Driver?",
+                "This will disconnect your storage selection. If you choose Local offline, your saved local data will remain cached. Cloud data remains on Firestore.",
                 () => {
+                    localStorage.removeItem('lifesync_storage_mode');
                     localStorage.removeItem('lifesync_firebase_config_v2');
                     location.reload();
                 }
             );
         };
 
-        // --- EXPORT FUNCTION ---
-        window.exportCloudData = function() {
+        window.disconnectFirebaseConfig = function() {
+            window.disconnectStorageMode();
+        };
+
+        // --- BACKUP & EXPORTS UTILITY ---
+        window.exportActiveBackupData = function() {
             const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
             const dlAnchorElem = document.createElement('a');
             dlAnchorElem.setAttribute("href", dataStr);
-            dlAnchorElem.setAttribute("download", `lifesync_cloud_backup_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchorElem.setAttribute("download", `lifesync_backup_${new Date().toISOString().split('T')[0]}.json`);
             dlAnchorElem.click();
         };
 
-        // --- VIEWPORT CONTROLS & HELPERS ---
+        window.exportCloudData = function() {
+            window.exportActiveBackupData();
+        };
+
+        window.triggerImportSelection = function() {
+            document.getElementById('importFile').click();
+        };
+
+        window.importBackupData = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const parsed = JSON.parse(e.target.result);
+                    const storageMode = localStorage.getItem('lifesync_storage_mode');
+
+                    if (Array.isArray(parsed)) {
+                        if (storageMode === 'local') {
+                            items = parsed;
+                            localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                            renderDashboardUI();
+                            closeModal('settingsModal');
+                            showDialog("Backup Restored", `Imported ${parsed.length} items to offline browser cache memory.`, "success");
+                        } else {
+                            // Import Cloud sync via Batch
+                            const userId = auth.currentUser?.uid;
+                            if (!userId) return;
+
+                            showDialogConfirm(
+                                "Upload Backup to Cloud?",
+                                `Found ${parsed.length} items inside backup. This will upload all tracked records to your live Firebase Cloud account.`,
+                                async () => {
+                                    try {
+                                        for (const item of parsed) {
+                                            const docRef = doc(db, 'artifacts', appId, 'users', userId, 'items', item.id);
+                                            await setDoc(docRef, item);
+                                        }
+                                        closeModal('settingsModal');
+                                        showDialog("Sync Complete", `Successfully uploaded ${parsed.length} tracked records to Firestore cloud.`, "success");
+                                    } catch(err) {
+                                        showDialog("Upload Failure", "Could not write to cloud paths. Verify security permissions.", "error");
+                                    }
+                                }
+                            );
+                        }
+                    } else {
+                        showDialog("Parser Error", "JSON schema must represent a valid documents array structure.", "error");
+                    }
+                } catch(err) {
+                    showDialog("Deserialization Error", "Unable to process selected JSON file.", "error");
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.wipeCurrentData = function() {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            
+            showDialogConfirm(
+                "Delete Database?",
+                "Are you absolutely sure? This purges active items. This action cannot be reversed.",
+                async () => {
+                    if (storageMode === 'local') {
+                        items = [];
+                        localStorage.removeItem('lifesync_local_items');
+                        renderDashboardUI();
+                        closeModal('settingsModal');
+                        showDialog("Purged Successfully", "Cleared all items inside offline memory.", "success");
+                    } else {
+                        const userId = auth.currentUser?.uid;
+                        if (!userId) return;
+
+                        try {
+                            // Clean documents sequentially
+                            for (const item of items) {
+                                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'items', item.id);
+                                await deleteDoc(docRef);
+                            }
+                            closeModal('settingsModal');
+                            showDialog("Purged Cloud", "Purged cloud documents.", "success");
+                        } catch(err) {
+                            showDialog("Write Protection Fail", "Verify user authentication permissions.", "error");
+                        }
+                    }
+                }
+            );
+        };
+
+        // --- FILTER & MODAL VISUAL HELPERS ---
         window.setCategoryFilter = function(category) {
             currentFilter = category;
             const pills = document.querySelectorAll('.category-filter');
