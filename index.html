@@ -166,8 +166,8 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                     </svg>
                 </div>
-                <h2 class="text-xl font-extrabold text-white tracking-wide">Secure LifeSync Account</h2>
-                <p class="text-xs text-slate-400">Sign in to sync medications, pet care, & vehicle schedules</p>
+                <h2 id="authScreenTitle" class="text-xl font-extrabold text-white tracking-wide">Create LifeSync Account</h2>
+                <p id="authScreenDesc" class="text-xs text-slate-400">Register below to initiate automated background cloud updates</p>
             </div>
 
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
@@ -239,9 +239,10 @@
                         </svg>
                         <span class="hidden sm:inline">Track New Item</span>
                     </button>
-                    <button onclick="openModal('settingsModal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="System Settings">
+                    <button onclick="openModal('settingsModal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150 flex items-center justify-center" title="System Settings">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31( 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                         </svg>
                     </button>
                     <button id="logoutBtn" onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="Sign Out">
@@ -567,7 +568,9 @@
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6">
             <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31( 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    </svg>
                     <span>System Settings & Storage Drivers</span>
                 </h3>
                 <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition">
@@ -654,6 +657,17 @@
         // Global parameters provided by preview engine
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'lifesync-cloud-tracker';
 
+        // NATIVE INTEGRATED FIREBASE POOL DEPLOYMENT KEYS
+        const NATIVE_FIREBASE_CONFIG = {
+            apiKey: "AIzaSyCh_S19J81W9HZNs-BDY0Zb1EMXAJZpKHM",
+            authDomain: "lifesync-tracker.firebaseapp.com",
+            projectId: "lifesync-tracker",
+            storageBucket: "lifesync-tracker.firebasestorage.app",
+            messagingSenderId: "1010234160497",
+            appId: "1:1010234160497:web:c69cb8b9f996e7b85cf2d0",
+            measurementId: "G-EQHD4B1SDZ"
+        };
+
         // Seed data offset helper generator
         function getOffsetDateString(daysOffset) {
             const date = new Date();
@@ -709,7 +723,7 @@
         let items = [];
         let profile = { webhook: "" };
         let currentFilter = 'all';
-        let isSignUpMode = false;
+        let isSignUpMode = true; // Start in sign up mode
         let activeFirestoreUnsubscribe = null;
         let activeProfileUnsubscribe = null;
 
@@ -802,44 +816,14 @@
 
         // --- CLOUD SYNCING MODE LIFECYCLE ---
         async function setupCloudLifecycle() {
-            let activeConfig = null;
-
             // Sync settings banners
             document.getElementById('localUpgradeBanner').classList.add('hidden');
             document.getElementById('cloudDisconnectBanner').classList.remove('hidden');
             document.getElementById('logoutBtn').classList.remove('hidden');
 
-            // Check if Canvas environment-provided Firebase settings exist
-            if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-                try {
-                    activeConfig = JSON.parse(__firebase_config);
-                } catch (e) {
-                    console.error("Invalid preview configuration", e);
-                }
-            }
-
-            // Fallback to local stored keys from previous session setup
-            if (!activeConfig) {
-                const storedConfig = localStorage.getItem('lifesync_firebase_config_v2');
-                if (storedConfig) {
-                    try {
-                        activeConfig = JSON.parse(storedConfig);
-                    } catch (e) {
-                        console.error("Invalid locally saved config cache");
-                    }
-                }
-            }
-
-            // If config is completely missing, prompt cloud setup wizard
-            if (!activeConfig) {
-                document.getElementById('setupScreen').classList.remove('hidden');
-                document.getElementById('setupScreen').classList.add('flex');
-                return;
-            }
-
-            // Connect Firebase Core
+            // Connect Firebase Core directly using Native Config
             try {
-                app = initializeApp(activeConfig);
+                app = initializeApp(NATIVE_FIREBASE_CONFIG);
                 auth = getAuth(app);
                 db = getFirestore(app);
 
@@ -847,8 +831,7 @@
                 setupAuthenticationListener();
             } catch (err) {
                 console.error("Firebase connection error:", err);
-                showDialog("Connection Failure", "Could not initialize Google Firestore with the provided credentials. Return to offline or re-configure JSON.", "error");
-                document.getElementById('setupScreen').classList.remove('hidden');
+                showDialog("Initialization Failure", "Could not connect to automated cloud network pools.", "error");
             }
         }
 
@@ -888,8 +871,28 @@
                     document.getElementById('mainDashboard').classList.add('hidden');
                     document.getElementById('setupScreen').classList.add('hidden');
                     document.getElementById('authScreen').classList.remove('hidden');
+                    updateAuthPanelUI();
                 }
             });
+        }
+
+        function updateAuthPanelUI() {
+            const title = document.getElementById('authScreenTitle');
+            const desc = document.getElementById('authScreenDesc');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleBtn = document.getElementById('authToggleBtn');
+
+            if (isSignUpMode) {
+                title.textContent = "Create LifeSync Account";
+                desc.textContent = "Register below to initiate automated background cloud updates";
+                submitBtn.textContent = "Sign Up";
+                toggleBtn.textContent = "Already have an account? Sign In";
+            } else {
+                title.textContent = "Secure LifeSync Login";
+                desc.textContent = "Access real-time expiration items synchronized across your screens";
+                submitBtn.textContent = "Sign In";
+                toggleBtn.textContent = "Don't have an account? Sign Up";
+            }
         }
 
         // Real-time Cloud Subscriptions (Rule 1 strict structure paths)
@@ -1031,12 +1034,13 @@
         // Relative Date Calculations
         function calculateDaysRemaining(dateString) {
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const target = new Date(dateString);
-            target.setHours(0, 0, 0, 0);
+            const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
             
-            const diffTime = target - today;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const parts = dateString.split('-');
+            const targetUTC = Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            
+            const diffTime = targetUTC - todayUTC;
+            return Math.floor(diffTime / (1000 * 60 * 60 * 24));
         }
 
         function getCategoryDetails(category) {
@@ -1703,15 +1707,7 @@
 
         window.toggleAuthMode = function() {
             isSignUpMode = !isSignUpMode;
-            const title = document.getElementById('authSubmitBtn');
-            const toggle = document.getElementById('authToggleBtn');
-            if (isSignUpMode) {
-                title.textContent = "Sign Up";
-                toggle.textContent = "Already have an account? Sign In";
-            } else {
-                title.textContent = "Sign In";
-                toggle.textContent = "Don't have an account? Sign Up";
-            }
+            updateAuthPanelUI();
         };
 
         window.toggleRecurrenceHelper = function() {
