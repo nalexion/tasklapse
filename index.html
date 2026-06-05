@@ -3,26 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskLapse | Secure Expiration Tracker</title>
+    <title>TaskLapse | Secure Cloud Expiration Tracker</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts (Inter) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { color-scheme: dark; }
-        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; }
-        .date-wrapper { position: relative; }
-        .date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
-            position: absolute; top: 0; right: 0; width: 44px; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; z-index: 10;
+        :root {
+            color-scheme: dark;
         }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: #111827; }
-        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0b0f19;
+        }
+        .date-wrapper {
+            position: relative;
+        }
+        .date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 44px;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            opacity: 0;
+            cursor: pointer;
+            z-index: 10;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #111827;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #374151;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4b5563;
+        }
     </style>
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col antialiased">
 
+    <!-- CHOICE ONBOARDING SCREEN -->
     <div id="choiceScreen" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl p-6 md:p-8 shadow-2xl space-y-8 animate-in fade-in zoom-in-95 duration-150">
             <div class="text-center space-y-2">
@@ -32,7 +61,7 @@
                     </svg>
                 </div>
                 <h2 class="text-2xl font-extrabold text-white tracking-wide mt-2">Welcome to TaskLapse</h2>
-                <p class="text-sm text-slate-400 max-w-md mx-auto">Track medication, pet care schedules, vehicle insurance, and subscriptions. Choose how you want to save your data:</p>
+                <p class="text-sm text-slate-400 max-w-md mx-auto">Track your deadlines with precision. Choose how you want to save your data:</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -53,22 +82,23 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
                         </div>
                         <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Real-time Cloud Sync</h3>
-                        <p class="text-xs text-slate-400 leading-relaxed">Sync perfectly across devices. Authenticate instantly using our integrated native cloud server architecture.</p>
+                        <p class="text-xs text-slate-400 leading-relaxed">Sync perfectly across devices with secure cloud infrastructure.</p>
                     </div>
-                    <span class="inline-flex items-center text-xs text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">Create Cloud Account &rarr;</span>
+                    <span class="inline-flex items-center text-xs text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">Connect Cloud Account &rarr;</span>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- AUTHENTICATION SCREEN -->
     <div id="authScreen" class="hidden fixed inset-0 z-40 bg-slate-950 flex flex-col items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-150">
             <div class="text-center space-y-2">
                 <div class="inline-flex p-3 bg-indigo-600/10 text-indigo-400 rounded-2xl border border-indigo-500/20 mx-auto">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" /></svg>
                 </div>
-                <h2 id="authScreenTitle" class="text-xl font-extrabold text-white tracking-wide">Create TaskLapse Account</h2>
-                <p id="authScreenDesc" class="text-xs text-slate-400">Register below to initiate automated background cloud updates</p>
+                <h2 id="authScreenTitle" class="text-xl font-extrabold text-white tracking-wide">Secure TaskLapse Login</h2>
+                <p id="authScreenDesc" class="text-xs text-slate-400">Access real-time synced items</p>
             </div>
 
             <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
@@ -84,17 +114,15 @@
                     <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
                 <div class="flex items-center justify-between pt-1">
-                    <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">Already have an account? Sign In</button>
+                    <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">Need to Create Account?</button>
                 </div>
-                <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm py-2.5 rounded-lg shadow-lg shadow-indigo-600/20 transition">Sign Up</button>
+                <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm py-2.5 rounded-lg shadow-lg shadow-indigo-600/20 transition">Sign In</button>
             </form>
-
             <div class="relative flex py-2 items-center text-slate-700">
                 <div class="flex-grow border-t border-slate-800"></div>
                 <span class="flex-shrink mx-4 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Or Switch Layouts</span>
                 <div class="flex-grow border-t border-slate-800"></div>
             </div>
-
             <div class="grid grid-cols-2 gap-2">
                 <button onclick="signInAnonymouslyFallback()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs font-semibold py-2.5 rounded-lg transition">⚡ Guest Sync</button>
                 <button onclick="changeMindReturnToChoice()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-400 text-xs font-semibold py-2.5 rounded-lg transition">📍 Go Offline</button>
@@ -102,7 +130,9 @@
         </div>
     </div>
 
+    <!-- MAIN APP DASHBOARD INTERFACE -->
     <div id="mainDashboard" class="hidden flex-col flex-grow">
+        <!-- TOP NAVIGATION HEADER -->
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -116,17 +146,13 @@
                         <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
                     </div>
                 </div>
-
                 <div class="flex items-center space-x-2 sm:space-x-3">
                     <button onclick="openModal('addItemModal')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/20 transition duration-150">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
                         <span class="hidden sm:inline">Track New Item</span>
                     </button>
                     <button onclick="openModal('settingsModal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150 flex items-center justify-center" title="System Settings">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                        </svg>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </button>
                     <button id="logoutBtn" onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150" title="Sign Out">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
@@ -184,7 +210,6 @@
                     <button onclick="setCategoryFilter('subscription')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="subscription">💳 Subscriptions</button>
                     <button onclick="setCategoryFilter('household')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="household">🏠 Household & Other</button>
                 </div>
-
                 <div class="flex items-center space-x-2">
                     <button onclick="triggerDailyNotificationCheck()" class="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs tracking-wide shadow-lg shadow-amber-500/10 transition duration-150">
                         <svg class="w-4 h-4 text-slate-950" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" /></svg>
@@ -196,23 +221,30 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
                     <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
-                        <div class="flex items-center space-x-2.5"><div class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></div><h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Days</h2></div>
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Days</h2>
+                        </div>
                         <span id="countDays" class="text-xs bg-rose-500/10 text-rose-400 font-semibold px-2 py-0.5 rounded-full border border-rose-500/20">0 Items</span>
                     </div>
                     <div class="flex-grow space-y-3.5 overflow-y-auto" id="colDays"></div>
                 </div>
-
                 <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
                     <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
-                        <div class="flex items-center space-x-2.5"><div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div><h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Weeks</h2></div>
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Weeks</h2>
+                        </div>
                         <span id="countWeeks" class="text-xs bg-amber-500/10 text-amber-400 font-semibold px-2 py-0.5 rounded-full border border-amber-500/20">0 Items</span>
                     </div>
                     <div class="flex-grow space-y-3.5 overflow-y-auto" id="colWeeks"></div>
                 </div>
-
                 <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
                     <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
-                        <div class="flex items-center space-x-2.5"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div><h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Months</h2></div>
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Months</h2>
+                        </div>
                         <span id="countMonths" class="text-xs bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/20">0 Items</span>
                     </div>
                     <div class="flex-grow space-y-3.5 overflow-y-auto" id="colMonths"></div>
@@ -233,7 +265,6 @@
                         </div>
                         <button onclick="clearOutbox()" class="text-xs text-slate-400 hover:text-white transition duration-150">Clear Logs</button>
                     </div>
-
                     <div class="flex-grow overflow-y-auto space-y-3 pr-2" id="emailOutbox">
                         <div class="h-full flex flex-col items-center justify-center text-center p-4" id="emptyOutboxMessage">
                             <svg class="w-12 h-12 text-slate-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v4.5m12+3a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
@@ -249,41 +280,27 @@
                             <span id="cloudStatusBadge" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Active</span>
                         </h3>
                         <p class="text-xs text-slate-400 mt-1 mb-4">Set up a Make/Zapier webhook to turn these simulation logs into actual emails directly inside your personal mailbox.</p>
-
                         <div class="space-y-4">
                             <div>
                                 <label class="block text-xs font-semibold text-slate-300 mb-1.5">Incoming Webhook Endpoint</label>
-                                <input type="url" id="webhookInputDash" placeholder="https://hook.make.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                                <input type="url" id="webhookInput" placeholder="https://hook.make.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                             </div>
                             <div class="bg-slate-950/50 border border-slate-800/80 rounded-lg p-3 text-xs space-y-2">
-                                <p class="font-semibold text-slate-200 flex items-center gap-1">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> System Connection Guard
-                                </p>
-                                <p id="modeDescriptionTag" class="text-slate-400 text-[11px] leading-relaxed">
-                                    Schedules are secured directly inside your local cache storage.
-                                </p>
+                                <p class="font-semibold text-slate-200 flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-indigo-400"></span> System Connection Guard</p>
+                                <p id="modeDescriptionTag" class="text-slate-400 text-[11px] leading-relaxed">Schedules are secured directly inside your local cache storage.</p>
                             </div>
                         </div>
                     </div>
-
                     <div class="pt-4 border-t border-slate-800 flex justify-between items-center">
                         <span class="text-[11px] text-indigo-400 font-semibold" id="cloudStatusTag">Sync status: Active</span>
-                        <button onclick="openModal('settingsModal')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition">Open Settings</button>
+                        <button onclick="saveProfileSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition">Save Settings</button>
                     </div>
                 </div>
             </section>
         </main>
     </div>
 
-    <footer class="border-t border-slate-800 bg-slate-950 py-6 mt-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p class="text-xs text-slate-500">&copy; 2026 TaskLapse. Secure personal expiration sandbox.</p>
-            <div class="flex space-x-4 text-xs text-slate-400">
-                <button onclick="disconnectStorageMode()" class="hover:text-rose-400 text-slate-500 transition">Reset Storage Choice</button>
-            </div>
-        </div>
-    </footer>
-
+    <!-- TRACK NEW ITEM MODAL -->
     <div id="addItemModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div class="bg-slate-900/50 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
@@ -297,14 +314,12 @@
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
-
             <form id="itemForm" onsubmit="handleFormSubmit(event)" class="px-6 py-4 space-y-4">
                 <input type="hidden" id="itemId">
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Item / Task Name <span class="text-rose-500">*</span></label>
                     <input type="text" id="itemName" required placeholder="e.g. Dog dewormer pill, Auto insurance renewal" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
-
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Category <span class="text-rose-500">*</span></label>
@@ -320,13 +335,10 @@
                         <label class="block text-xs font-semibold text-slate-300 mb-1">Target Expiry Date <span class="text-rose-500">*</span></label>
                         <div class="date-wrapper">
                             <input type="date" id="itemExpiryDate" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 pr-10 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition cursor-pointer" />
-                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 pointer-events-none transition">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                            </div>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 pointer-events-none transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div>
                         </div>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Does this repeat / recur?</label>
                     <select id="itemRecurrence" onchange="toggleRecurrenceHelper()" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
@@ -340,7 +352,6 @@
                     </select>
                     <p class="text-[10px] text-slate-400 mt-1" id="recurrenceHelpText">Automatically push deadlines on completion check.</p>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">When should we email you alerts?</label>
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
@@ -350,12 +361,10 @@
                         <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" id="alert0" value="0" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4"><span class="text-xs text-slate-300">Day of (0d)</span></label>
                     </div>
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-300 mb-1">Details / Notes</label>
                     <textarea id="itemNotes" rows="2" placeholder="Dosage, prescription..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition resize-none"></textarea>
                 </div>
-
                 <div class="pt-4 border-t border-slate-800 flex justify-end space-x-3">
                     <button type="button" onclick="closeModal('addItemModal')" class="bg-slate-800 hover:bg-slate-750 text-slate-300 px-4 py-2.5 rounded-lg text-xs font-semibold transition">Cancel</button>
                     <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-xs font-semibold transition shadow-lg shadow-indigo-600/10">Save Item</button>
@@ -364,38 +373,27 @@
         </div>
     </div>
 
+    <!-- SYSTEM CONFIGURATION MODAL -->
     <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6">
             <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
                 <h3 class="text-sm font-bold text-white flex items-center gap-2">
-                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    </svg>
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
                     <span>System Settings & Storage Drivers</span>
                 </h3>
                 <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
-
             <div class="space-y-4 text-xs">
                 <div>
                     <h4 class="font-semibold text-slate-300 mb-1">Email Recipient Address</h4>
                     <input type="email" id="emailInput" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
-                
-                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-3">
-                    <div>
-                        <label class="block font-semibold text-slate-300 mb-1.5">Webhook Endpoint URL</label>
-                        <input type="url" id="webhookInput" placeholder="https://hook.make.com/..." class="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-                    </div>
-                    <div>
-                        <label class="block font-semibold text-slate-300 mb-1.5">Webhook Authentication Secret</label>
-                        <input type="password" id="webhookSecretInput" placeholder="Secure token for Make filter" class="w-full bg-slate-900 border border-slate-700 rounded-lg py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
-                        <p class="text-[10px] text-slate-500 mt-1">Keeps your notification endpoints safe from unauthorized triggers.</p>
-                    </div>
+                <div>
+                    <h4 class="font-semibold text-slate-300 mb-1">Webhook Authentication Secret</h4>
+                    <input type="password" id="webhookSecretInput" placeholder="Enter your private Make.com scenario secret" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
-
                 <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
                     <h4 class="font-semibold text-slate-300">Data Backups & Migrations</h4>
                     <div class="flex gap-2 mt-2">
@@ -404,17 +402,14 @@
                         <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackupData(event)">
                     </div>
                 </div>
-
                 <div id="localUpgradeBanner" class="hidden bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-xl space-y-2">
                     <h4 class="font-bold text-white text-xs">🚀 Move to Cloud Syncing</h4>
                     <button onclick="switchToCloudMode()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-1.5 rounded text-[11px] transition">Upgrade to Cloud Sync</button>
                 </div>
-
                 <div id="cloudDisconnectBanner" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
                     <h4 class="font-bold text-white text-xs">☁️ Cloud Integration Active</h4>
                     <button onclick="switchToLocalMode()" class="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-semibold py-1.5 rounded text-[11px] transition">Disconnect Cloud Sync</button>
                 </div>
-
                 <div class="flex items-center justify-between pt-3 border-t border-slate-800">
                     <button onclick="wipeCurrentData()" class="text-rose-500 hover:text-rose-400 font-semibold">Delete Storage Data</button>
                     <button onclick="saveSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg font-semibold transition">Save Profile</button>
@@ -423,6 +418,7 @@
         </div>
     </div>
 
+    <!-- SYSTEM ALERTS OVERLAY -->
     <div id="dialogModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-[60] p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-xl overflow-hidden shadow-2xl p-5 text-center">
             <div class="flex items-center justify-center text-amber-400 mb-3" id="dialogIcon"></div>
@@ -435,19 +431,14 @@
         </div>
     </div>
 
+    <!-- CORE LOGIC & AUTOPROVISIONED DATABASE SDK -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
-        import { 
-            getAuth, signInAnonymously, onAuthStateChanged, signOut, 
-            signInWithEmailAndPassword, createUserWithEmailAndPassword 
-        } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
-        import { 
-            getFirestore, doc, setDoc, collection, onSnapshot, deleteDoc 
-        } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
-
-        const appId = 'lifesync-cloud-tracker';
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, collection, onSnapshot, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
 
         // NATIVE INTEGRATED FIREBASE POOL DEPLOYMENT KEYS
+        const appId = 'tasklapse';
         const NATIVE_FIREBASE_CONFIG = {
             apiKey: "AIzaSyCh_S19J81W9HZNs-BDY0Zb1EMXAJZpKHM",
             authDomain: "lifesync-tracker.firebaseapp.com",
@@ -473,13 +464,11 @@
         let items = [];
         let profile = { webhook: "", webhookSecret: "" };
         let currentFilter = 'all';
-        let isSignUpMode = true;
+        let isSignUpMode = false;
         let activeFirestoreUnsubscribe = null;
         let activeProfileUnsubscribe = null;
 
-        window.onload = function() {
-            initLifecycle();
-        };
+        window.onload = function() { initLifecycle(); };
 
         window.selectStorageMode = function(mode) {
             localStorage.setItem('lifesync_storage_mode', mode);
@@ -495,21 +484,13 @@
 
         async function initLifecycle() {
             const storageMode = localStorage.getItem('lifesync_storage_mode');
-
             if (!storageMode) {
                 document.getElementById('choiceScreen').classList.remove('hidden');
                 document.getElementById('choiceScreen').classList.add('flex');
                 return;
             }
-
-            if (storageMode === 'local') {
-                setupLocalOfflineLifecycle();
-                return;
-            }
-
-            if (storageMode === 'cloud') {
-                setupCloudLifecycle();
-            }
+            if (storageMode === 'local') { setupLocalOfflineLifecycle(); return; }
+            if (storageMode === 'cloud') { setupCloudLifecycle(); }
         }
 
         function setupLocalOfflineLifecycle() {
@@ -540,13 +521,10 @@
                 localStorage.setItem('lifesync_local_items', JSON.stringify(items));
             }
 
-            // Load local profile settings including the new secret
             const localWebhook = localStorage.getItem('lifesync_local_webhook') || "";
-            const localWebhookSecret = localStorage.getItem('lifesync_local_webhook_secret') || "";
-            profile = { webhook: localWebhook, webhookSecret: localWebhookSecret };
-            
+            const localSecret = localStorage.getItem('lifesync_local_secret') || "";
+            profile = { webhook: localWebhook, webhookSecret: localSecret };
             document.getElementById('webhookInput').value = profile.webhook;
-            document.getElementById('webhookInputDash').value = profile.webhook;
             document.getElementById('webhookSecretInput').value = profile.webhookSecret;
 
             renderDashboardUI();
@@ -563,7 +541,6 @@
                 db = getFirestore(app);
                 setupAuthenticationListener();
             } catch (err) {
-                console.error("Firebase connection error:", err);
                 showDialog("Initialization Failure", "Could not connect to automated cloud network pools.", "error");
             }
         }
@@ -607,16 +584,11 @@
                 toggleBtn.textContent = "Already have an account? Sign In";
             } else {
                 title.textContent = "Secure TaskLapse Login";
-                desc.textContent = "Access real-time expiration items synchronized across your screens";
+                desc.textContent = "Access real-time synced items";
                 submitBtn.textContent = "Sign In";
-                toggleBtn.textContent = "Don't have an account? Sign Up";
+                toggleBtn.textContent = "Need to Create Account?";
             }
         }
-
-        window.toggleAuthMode = function() {
-            isSignUpMode = !isSignUpMode;
-            updateAuthPanelUI();
-        };
 
         function bindRealtimeFirestoreCollections(userId) {
             const itemsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'items');
@@ -637,9 +609,7 @@
             activeProfileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
                 if (docSnap.exists()) { profile = docSnap.data(); } 
                 else { profile = { webhook: "", webhookSecret: "" }; }
-                
                 document.getElementById('webhookInput').value = profile.webhook || "";
-                document.getElementById('webhookInputDash').value = profile.webhook || "";
                 document.getElementById('webhookSecretInput').value = profile.webhookSecret || "";
             });
         }
@@ -671,7 +641,6 @@
             colDays.innerHTML = ''; colWeeks.innerHTML = ''; colMonths.innerHTML = '';
 
             let counterDays = 0, counterWeeks = 0, counterMonths = 0;
-
             const filteredItems = items.filter(item => currentFilter === 'all' || item.category === currentFilter);
 
             filteredItems.forEach(item => {
@@ -698,22 +667,15 @@
         }
 
         function renderEmptyColumnState(columnElement, title) {
-            columnElement.innerHTML = `
-                <div class="h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-850 rounded-xl py-12">
-                    <p class="text-xs font-semibold text-slate-500">No items due</p>
-                </div>
-            `;
+            columnElement.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-850 rounded-xl py-12"><p class="text-xs font-semibold text-slate-500">No items due</p></div>`;
         }
 
         function calculateDaysRemaining(dateString) {
             const today = new Date();
             const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
-            
             const parts = dateString.split('-');
             const targetUTC = Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-            
-            const diffTime = targetUTC - todayUTC;
-            return Math.floor(diffTime / (1000 * 60 * 60 * 24));
+            return Math.floor((targetUTC - todayUTC) / (1000 * 60 * 60 * 24));
         }
 
         function getCategoryDetails(category) {
@@ -745,9 +707,7 @@
                 ringColor = 'border-slate-800';
             }
 
-            const activeAlertsStr = item.alertWindows ? item.alertWindows.map(w => `${w}d`).join(', ') : 'None';
             card.className = `group bg-slate-900/60 border ${ringColor} rounded-xl p-4 hover:bg-slate-900 hover:border-slate-700 transition duration-200 relative overflow-hidden`;
-            
             card.innerHTML = `
                 <div class="flex items-center justify-between mb-2">
                     <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ${cat.bg}">${cat.emoji} ${cat.label}</span>
@@ -763,7 +723,6 @@
                     <button id="btn-done-${item.id}" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-1 rounded transition">Check Off</button>
                 </div>
             `;
-
             card.querySelector(`#btn-edit-${item.id}`).onclick = () => editItem(item.id);
             card.querySelector(`#btn-del-${item.id}`).onclick = () => confirmItemDelete(item.id);
             card.querySelector(`#btn-done-${item.id}`).onclick = () => completeOrRenewItem(item.id);
@@ -815,9 +774,6 @@
 
         async function triggerExternalWebhookAPI(item, daysLeft) {
             const storageMode = localStorage.getItem('lifesync_storage_mode');
-            
-            // SECURITY: The auth_secret is now dynamically pulled from the user's secure profile,
-            // preventing the Make secret key from being exposed on GitHub!
             const payload = { 
                 event: "expiration_alert", 
                 item: item.name, 
@@ -827,7 +783,7 @@
                 category: item.category,
                 driverMode: storageMode,
                 user: storageMode === 'cloud' ? (auth.currentUser?.email || "anonymous") : "local-user",
-                auth_secret: profile.webhookSecret || "" 
+                auth_secret: profile.webhookSecret || ""
             };
             
             try {
@@ -961,21 +917,13 @@
             if (storageMode === 'local') {
                 localStorage.setItem('lifesync_simulated_email', document.getElementById('emailInput').value);
                 localStorage.setItem('lifesync_local_webhook', webhookIn);
-                localStorage.setItem('lifesync_local_webhook_secret', webhookSecretIn);
+                localStorage.setItem('lifesync_local_secret', webhookSecretIn);
                 profile = { webhook: webhookIn, webhookSecret: webhookSecretIn };
-                
-                // Update dash input
-                if(document.getElementById('webhookInputDash')) { document.getElementById('webhookInputDash').value = webhookIn; }
                 closeModal('settingsModal');
             } else {
                 const userId = auth.currentUser?.uid;
                 if (!userId) return;
-                
-                await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile'), { 
-                    webhook: webhookIn,
-                    webhookSecret: webhookSecretIn
-                }, { merge: true });
-                
+                await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile'), { webhook: webhookIn, webhookSecret: webhookSecretIn });
                 closeModal('settingsModal');
             }
         };
@@ -997,6 +945,11 @@
             } catch(err) {
                 showDialog("Authentication Failure", err.message, "error");
             }
+        };
+
+        window.toggleAuthMode = function() {
+            isSignUpMode = !isSignUpMode;
+            updateAuthPanelUI();
         };
 
         window.signInAnonymouslyFallback = async function() { await signInAnonymously(auth); };
