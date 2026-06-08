@@ -51,7 +51,7 @@
 </head>
 <body class="text-slate-100 min-h-screen flex flex-col antialiased">
 
-    <!-- CHOICE ONBOARDING SCREEN -->
+    <!-- STREAMING_CHUNK: choiceScreen -->
     <div id="choiceScreen" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl p-6 md:p-8 shadow-2xl space-y-8 animate-in fade-in zoom-in-95 duration-150">
             <div class="text-center space-y-2">
@@ -90,7 +90,7 @@
         </div>
     </div>
 
-    <!-- AUTHENTICATION SCREEN -->
+    <!-- STREAMING_CHUNK: authScreen -->
     <div id="authScreen" class="hidden fixed inset-0 z-40 bg-slate-950 flex flex-col items-center justify-center p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-150">
             <div class="text-center space-y-2">
@@ -130,9 +130,8 @@
         </div>
     </div>
 
-    <!-- MAIN APP DASHBOARD INTERFACE -->
+    <!-- STREAMING_CHUNK: mainDashboard -->
     <div id="mainDashboard" class="hidden flex-col flex-grow">
-        <!-- TOP NAVIGATION HEADER -->
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 <div class="flex items-center space-x-3">
@@ -300,6 +299,7 @@
         </main>
     </div>
 
+    <!-- STREAMING_CHUNK: modals -->
     <!-- TRACK NEW ITEM MODAL -->
     <div id="addItemModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
         <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
@@ -431,7 +431,7 @@
         </div>
     </div>
 
-    <!-- CORE LOGIC & AUTOPROVISIONED DATABASE SDK -->
+    <!-- STREAMING_CHUNK: firebaseInit -->
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
         import { getAuth, signInAnonymously, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
@@ -468,6 +468,7 @@
         let activeFirestoreUnsubscribe = null;
         let activeProfileUnsubscribe = null;
 
+        // STREAMING_CHUNK: lifecycleMethods
         window.onload = function() { initLifecycle(); };
 
         window.selectStorageMode = function(mode) {
@@ -528,6 +529,7 @@
             document.getElementById('webhookSecretInput').value = profile.webhookSecret;
 
             renderDashboardUI();
+            runAutomatedDailyCheck();
         }
 
         async function setupCloudLifecycle() {
@@ -604,6 +606,7 @@
                 snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
                 items.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
                 renderDashboardUI();
+                runAutomatedDailyCheck(); // Run background check whenever cloud data drops in
             });
 
             activeProfileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
@@ -633,6 +636,7 @@
             }
         }
 
+        // STREAMING_CHUNK: renderLogic
         function renderDashboardUI() {
             const colDays = document.getElementById('colDays');
             const colWeeks = document.getElementById('colWeeks');
@@ -729,7 +733,23 @@
             return card;
         }
 
-        window.triggerDailyNotificationCheck = function() {
+        // STREAMING_CHUNK: apiWebhookLogic
+        function runAutomatedDailyCheck() {
+            // This runs silently in the background once a day when you open the app
+            if (!items || items.length === 0) return;
+            
+            const todayString = new Date().toISOString().split('T')[0];
+            const lastAutoCheck = localStorage.getItem('tasklapse_last_check_date');
+            
+            if (lastAutoCheck !== todayString) {
+                setTimeout(() => {
+                    window.triggerDailyNotificationCheck(true); // Pass true to make it silent
+                    localStorage.setItem('tasklapse_last_check_date', todayString);
+                }, 2000); // Give profile and data 2 seconds to fully mount
+            }
+        }
+
+        window.triggerDailyNotificationCheck = function(isSilentMode = false) {
             const emailOutbox = document.getElementById('emailOutbox');
             let matchedAlerts = [];
 
@@ -741,7 +761,9 @@
             });
 
             if (matchedAlerts.length === 0) {
-                showDialog("Alarm System Check", "All items are in healthy condition. No automated notifications scheduled to trigger today.", "info");
+                if (!isSilentMode) {
+                    showDialog("Alarm System Check", "All items are in healthy condition. No automated notifications scheduled to trigger today.", "info");
+                }
                 return;
             }
 
@@ -753,7 +775,9 @@
                 if (profile.webhook) triggerExternalWebhookAPI(match.item, match.daysLeft);
             });
 
-            showDialog("Alarms Checked", `Dispatched ${matchedAlerts.length} notification webhooks successfully.`, "success");
+            if (!isSilentMode) {
+                showDialog("Alarms Checked", `Dispatched ${matchedAlerts.length} notification webhooks successfully.`, "success");
+            }
         };
 
         function createEmailLogDOM(item, daysLeft) {
