@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskLapse v2.7.0 | Secure Cloud Expiration Tracker</title>
+    <title>TaskLapse v2.7.1 | Secure Cloud Expiration Tracker</title>
     
     <!-- Standard Browser Tab Favicon -->
     <link rel="icon" type="image/jpeg" href="favicon.jpg?v=3">
@@ -51,13 +51,13 @@
         <div class="max-w-md w-full glass-panel rounded-2xl p-8 shadow-2xl relative overflow-hidden">
             <div class="text-center mb-8">
                 <img src="logo.png" alt="TaskLapse Logo" class="w-20 h-20 mx-auto object-cover rounded-xl shadow-lg border border-slate-700 mb-4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFWMjkyRSIgcng9IjIwIi8+PHBhdGggZD0iTTMwIDUwbDE1IDE1IDMwLTMwIiBmaWxsPSJub25lIiBzdHJva2U9IiM4MTg0RkYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=='">
-                <h2 class="text-3xl font-bold text-white mb-1 tracking-tight">TaskLapse <span class="text-indigo-400 text-sm align-top">v2.7.0</span></h2>
+                <h2 class="text-3xl font-bold text-white mb-1 tracking-tight">TaskLapse <span class="text-indigo-400 text-sm align-top">v2.7.1</span></h2>
                 <p class="text-slate-400 text-sm">Secure Cloud Expiration Tracker</p>
             </div>
 
             <div id="authError" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm text-center"></div>
 
-            <!-- Google Sign-In Button (v2.7.0) -->
+            <!-- Google Sign-In Button (Popup Variant) -->
             <button onclick="handleGoogleLogin()" class="w-full flex justify-center items-center gap-3 bg-white hover:bg-slate-100 text-slate-900 font-semibold py-2.5 px-4 border border-slate-200 rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -103,21 +103,22 @@
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 
-            <!-- Left: Logo & Branding -->
-            <div class="flex items-center space-x-3">
-            <img src="logo.png" alt="TaskLapse Logo" class="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-700">
-            <div>
-                    <!-- UPDATED: Added the v2.7.1 badge next to the title -->
-                    <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                    TaskLapse <span class="text-indigo-400 text-xs align-top font-normal mr-1">v2.7.1</span>
-            <span id="syncBadge" class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
-        </h1>
-        <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
-    </div>
-</div>
-                <!-- Right: Search & Actions (Perfectly Aligned Flex Container) -->
+                <!-- Left: Logo & Branding -->
                 <div class="flex items-center space-x-3">
-                    <!-- Global Search (v2.6+) -->
+                    <img src="logo.png" alt="TaskLapse Logo" class="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-700" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFWMjkyRSIgcng9IjIwIi8+PHBhdGggZD0iTTMwIDUwbDE1IDE1IDMwLTMwIiBmaWxsPSJub25lIiBzdHJva2U9IiM4MTg0RkYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=='">
+                    <div>
+                        <!-- Version badge v2.7.1 -->
+                        <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                            TaskLapse <span class="text-indigo-400 text-xs font-normal align-middle">v2.7.1</span>
+                            <span id="syncBadge" class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
+                        </h1>
+                        <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
+                    </div>
+                </div>
+
+                <!-- Right: Search & Actions -->
+                <div class="flex items-center space-x-3">
+                    <!-- Global Search -->
                     <div class="relative hidden md:block w-48 lg:w-64">
                         <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                         <input type="text" id="globalSearch" placeholder="Search tasks..." class="w-full bg-slate-800 border border-slate-700 text-sm rounded-lg pl-9 pr-3 py-2 text-white focus:outline-none focus:border-indigo-500 transition-colors placeholder-slate-500" onkeyup="renderTasks()">
@@ -193,9 +194,7 @@
                         </h3>
                         <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300" id="countDays">0 Items</span>
                     </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colDays">
-                        <!-- Tasks inject here -->
-                    </div>
+                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colDays"></div>
                 </div>
 
                 <!-- Weeks Column -->
@@ -206,9 +205,7 @@
                         </h3>
                         <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300" id="countWeeks">0 Items</span>
                     </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colWeeks">
-                        <!-- Tasks inject here -->
-                    </div>
+                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colWeeks"></div>
                 </div>
 
                 <!-- Months Column -->
@@ -219,9 +216,7 @@
                         </h3>
                         <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300" id="countMonths">0 Items</span>
                     </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colMonths">
-                        <!-- Tasks inject here -->
-                    </div>
+                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colMonths"></div>
                 </div>
 
             </div>
@@ -229,28 +224,22 @@
     </div>
 
     <!-- MODALS -->
-
-    <!-- Task Modal (Create/Edit) -->
     <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
             <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
                 <h3 class="text-lg font-bold text-white" id="modalTitle">Track New Item</h3>
-                <button onclick="closeModal('taskModal')" class="text-slate-400 hover:text-white transition-colors">
-                    <i class="ph ph-x text-xl"></i>
-                </button>
+                <button onclick="closeModal('taskModal')" class="text-slate-400 hover:text-white transition-colors"><i class="ph ph-x text-xl"></i></button>
             </div>
             <form id="taskForm" onsubmit="event.preventDefault(); saveTask();" class="p-5 space-y-4">
                 <input type="hidden" id="taskId">
-                
                 <div id="validationError" class="hidden text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20"></div>
-
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Item Name</label>
-                    <input type="text" id="taskName" required minlength="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none placeholder-slate-600" placeholder="e.g., Driver's License">
+                    <input type="text" id="taskName" required minlength="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none" placeholder="e.g., Driver's License">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Category</label>
-                    <select id="taskCategory" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none">
+                    <select id="taskCategory" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none">
                         <option value="Personal">Personal</option>
                         <option value="Household">Household</option>
                         <option value="Health">Health / Medical</option>
@@ -261,35 +250,29 @@
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Expiration / Due Date</label>
-                    <!-- Strict ISO format enforcement via native date picker -->
-                    <input type="date" id="taskDate" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none [color-scheme:dark]">
+                    <input type="date" id="taskDate" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none [color-scheme:dark]">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Notes (Optional)</label>
-                    <textarea id="taskNotes" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none placeholder-slate-600 resize-none" placeholder="Any details..."></textarea>
+                    <textarea id="taskNotes" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none resize-none" placeholder="Details..."></textarea>
                 </div>
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-700">
-                    <button type="button" onclick="closeModal('taskModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md transition-colors">Save Item</button>
+                    <button type="button" onclick="closeModal('taskModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md">Save Item</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <!-- Archive Modal -->
     <div id="archiveModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-2xl max-h-[80vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
             <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="ph ph-archive-box"></i> Completed History</h3>
-                <button onclick="closeModal('archiveModal')" class="text-slate-400 hover:text-white transition-colors">
-                    <i class="ph ph-x text-xl"></i>
-                </button>
+                <button onclick="closeModal('archiveModal')" class="text-slate-400 hover:text-white"><i class="ph ph-x text-xl"></i></button>
             </div>
-            
-            <!-- v2.5+ Archive Filter Controls -->
             <div class="p-4 border-b border-slate-700 bg-slate-900/50 flex gap-3">
-                <input type="text" id="archiveSearch" placeholder="Search archives..." class="flex-1 bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none" onkeyup="renderArchives()">
-                <select id="archiveFilterCat" class="bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none" onchange="renderArchives()">
+                <input type="text" id="archiveSearch" placeholder="Search archives..." class="flex-1 bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white standard-focus outline-none" onkeyup="renderArchives()">
+                <select id="archiveFilterCat" class="bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white outline-none" onchange="renderArchives()">
                     <option value="All">All Categories</option>
                     <option value="Personal">Personal</option>
                     <option value="Household">Household</option>
@@ -298,31 +281,22 @@
                     <option value="Subscriptions">Subscriptions</option>
                 </select>
             </div>
-
-            <div class="p-5 overflow-y-auto flex-1 space-y-3" id="archiveList">
-                <!-- Archived items inject here -->
-            </div>
+            <div class="p-5 overflow-y-auto flex-1 space-y-3" id="archiveList"></div>
         </div>
     </div>
 
-    <!-- Settings / Webhook Modal -->
     <div id="settingsModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
         <div class="glass-panel w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
             <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
                 <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="ph ph-plugs-connected"></i> Outbound Webhooks</h3>
-                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition-colors">
-                    <i class="ph ph-x text-xl"></i>
-                </button>
+                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white"><i class="ph ph-x text-xl"></i></button>
             </div>
             <div class="p-5 space-y-4">
-                <p class="text-sm text-slate-400">Configure Make.com or Zapier to receive daily payload alerts for tasks expiring within 30 days.</p>
-                
+                <p class="text-sm text-slate-400">Configure webhooks for daily alert triggers.</p>
                 <div>
                     <label class="block text-sm font-medium text-slate-300 mb-1">Webhook URL</label>
-                    <input type="url" id="webhookUrl" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none text-sm placeholder-slate-600" placeholder="https://hook.make.com/...">
+                    <input type="url" id="webhookUrl" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none text-sm" placeholder="https://hook.make.com/...">
                 </div>
-
-                <!-- Telemetry Log UI (v2.5+) -->
                 <div class="mt-6 pt-4 border-t border-slate-700">
                     <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Delivery Telemetry</h4>
                     <div id="webhookLogSection" class="bg-slate-900 border border-slate-800 rounded p-3 text-xs font-mono text-slate-400">
@@ -334,34 +308,23 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-700 mt-4">
-                    <button type="button" onclick="closeModal('settingsModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white transition-colors">Cancel</button>
-                    <button type="button" onclick="saveSettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md transition-colors">Save URL</button>
+                    <button type="button" onclick="closeModal('settingsModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white">Cancel</button>
+                    <button type="button" onclick="saveSettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md">Save URL</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <!-- APP LOGIC (Firebase + Logic) -->
+    <!-- APP LOGIC -->
     <script type="module">
-        // Import Firebase components required
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, where, orderBy, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+        // Switched securely back to signInWithPopup to prevent cross-site tracking blocks
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
-        // Global State
-        let db;
-        let auth;
-        let googleProvider;
-        let currentUser = null;
-        let unsubscribeTasks = null;
-        let allTasks = [];
-        let webhookData = { url: "", lastStatus: "None", lastTime: "--" };
-        
-        // v2.7.0: Official Firebase Configuration (From Firebase.txt)
-        const appConfig = {
+        // Verified Immutable Credentials Block
+        const firebaseConfig = {
             apiKey: "AIzaSyCh_S19J81W9HZNs-BDY0Zb1EMXAJZpKHM",
             authDomain: "lifesync-tracker.firebaseapp.com",
             projectId: "lifesync-tracker",
@@ -370,29 +333,30 @@
             appId: "1:1010234160497:web:c69cb8b9f996e7b85cf2d0",
             measurementId: "G-EQHD4B1SDZ"
         };
-        const defaultAppId = typeof __app_id !== 'undefined' ? __app_id : 'lifesync-cloud-tracker';
+        const defaultAppId = 'lifesync-cloud-tracker';
 
-        // Initialize Firebase
+        // State Tracking variables
+        let db; let auth; let googleProvider;
+        let currentUser = null; let unsubscribeTasks = null; let allTasks = [];
+        let webhookData = { url: "", lastStatus: "None", lastTime: "--" };
+
         try {
-            const app = initializeApp(appConfig);
+            const app = initializeApp(firebaseConfig);
             auth = getAuth(app);
             db = getFirestore(app);
-            googleProvider = new GoogleAuthProvider(); // v2.7.0 Initialize Google Provider
-            console.log("Firebase initialized successfully with production keys.");
+            googleProvider = new GoogleAuthProvider();
+            console.log("Firebase Connection Active");
         } catch(e) {
-            console.error("Firebase init failed:", e);
+            console.error("Initialization error:", e);
         }
 
-        // --- AUTHENTICATION MODULE ---
-
-        // v2.7.1 Google Login Handler using redirect
+        // Authentication Handlers
         window.handleGoogleLogin = async () => {
             try {
-                hideError();
-                // This redirects the page safely, bypassing all browser popup blockers
-                await signInWithRedirect(auth, googleProvider);
+                // Trigger popup immediately without hiding errors first to satisfy browser intent restrictions
+                await signInWithPopup(auth, googleProvider);
             } catch (error) {
-                console.error("Google Auth Error:", error);
+                console.error("Popup error:", error);
                 showError("Google Sign-In failed: " + error.message);
             }
         };
@@ -407,22 +371,15 @@
                 } catch (e) {
                     if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
                         await createUserWithEmailAndPassword(auth, email, pass);
-                    } else {
-                        throw e;
-                    }
+                    } else { throw e; }
                 }
-            } catch (error) {
-                showError(handleAuthError(error));
-            }
+            } catch (error) { showError(error.message); }
         };
 
         window.handleGuestLogin = async () => {
             hideError();
-            try {
-                await signInAnonymously(auth);
-            } catch (error) {
-                showError(handleAuthError(error));
-            }
+            try { await signInAnonymously(auth); } 
+            catch (error) { showError(error.message); }
         };
 
         window.handleLogout = async () => {
@@ -433,48 +390,25 @@
             document.getElementById('authScreen').style.display = 'flex';
         };
 
-        function handleAuthError(error) {
-            console.error(error);
-            if(error.message.includes('requests-from-referer')) {
-                return "Domain blocked by Firebase. Please whitelist this preview domain in Firebase Auth Settings -> Authorized Domains.";
-            }
-            return error.message;
-        }
-
         function showError(msg) {
             const el = document.getElementById('authError');
-            el.textContent = msg;
-            el.classList.remove('hidden');
+            el.textContent = msg; el.classList.remove('hidden');
         }
-        function hideError() {
-            document.getElementById('authError').classList.add('hidden');
-        }
+        function hideError() { document.getElementById('authError').classList.add('hidden'); }
 
-        // Handle Redirect Result
-        getRedirectResult(auth).then((result) => {
-            if (result) {
-               console.log("Google sign-in successful via redirect:", result.user.email);
-            }
-        }).catch((error) => {
-            console.error("Google Auth Redirect Error:", error);
-            showError("Google Sign-In failed: " + error.message);
-        });
-
-        // Auth State Listener
+        // Authentication State Synchronization Observer
         onAuthStateChanged(auth, (user) => {
             if (user) {
                 currentUser = user;
                 document.getElementById('authScreen').style.display = 'none';
                 document.getElementById('dashboardScreen').style.display = 'flex';
                 
-                // UI Updates
-                document.getElementById('userEmailTag').textContent = `Logged in: ${user.isAnonymous ? 'Guest User' : (user.email || 'Google User')}`;
+                document.getElementById('userEmailTag').textContent = `Logged in: ${user.isAnonymous ? 'Guest User' : (user.email || 'Google Account Connected')}`;
                 document.getElementById('syncBadge').className = user.isAnonymous 
                     ? "text-[10px] bg-slate-500/20 text-slate-300 border border-slate-500/30 px-2 py-0.5 rounded-full font-normal" 
                     : "text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal";
                 document.getElementById('syncBadge').textContent = user.isAnonymous ? "Local Only" : "Cloud Synced";
 
-                // Load Data
                 loadSettings();
                 listenToTasks();
             } else {
@@ -484,11 +418,9 @@
             }
         });
 
-        // --- DATABASE & DATA MODULE ---
-
+        // Pipeline Path Matching
         function getCollectionRef() {
-            // v2.7.1 Connect back to the root path
-            return collection(db, 'users', currentUser.uid, 'tasks');
+            return collection(db, 'artifacts', defaultAppId, 'users', currentUser.uid, 'tasks');
         }
 
         function listenToTasks() {
@@ -496,20 +428,14 @@
             if (unsubscribeTasks) unsubscribeTasks();
 
             const ref = getCollectionRef();
-            // We fetch all and filter 'archived' on client to avoid requiring composite indexes initially
             unsubscribeTasks = onSnapshot(ref, (snapshot) => {
                 allTasks = [];
-                snapshot.forEach(doc => {
-                    allTasks.push({ id: doc.id, ...doc.data() });
-                });
+                snapshot.forEach(doc => { allTasks.push({ id: doc.id, ...doc.data() }); });
                 renderTasks();
                 renderArchives();
-            }, (error) => {
-                console.error("Firestore error:", error);
-            });
+            }, (error) => { console.error("Snapshot synchronization break:", error); });
         }
 
-        // Settings / Telemetry
         async function loadSettings() {
             if(!currentUser || currentUser.isAnonymous) return;
             try {
@@ -520,22 +446,19 @@
                     document.getElementById('webhookUrl').value = webhookData.url || "";
                     updateTelemetryUI();
                 }
-            } catch(e) { console.error("Error loading settings:", e); }
+            } catch(e) { console.error("Settings load catch:", e); }
         }
 
         window.saveSettings = async () => {
             const url = document.getElementById('webhookUrl').value.trim();
-            if(!currentUser || currentUser.isAnonymous) {
-                alert("Settings require a registered account.");
-                return;
-            }
+            if(!currentUser || currentUser.isAnonymous) { alert("Settings require registration."); return; }
             try {
                 const ref = doc(db, 'artifacts', defaultAppId, 'users', currentUser.uid, 'settings', 'webhook');
                 await setDoc(ref, { url: url, lastStatus: "Updated", lastTime: new Date().toLocaleString() }, {merge:true});
                 closeModal('settingsModal');
                 webhookData.url = url;
             } catch(e) { console.error(e); }
-        }
+        };
 
         function updateTelemetryUI() {
             const statEl = document.getElementById('telemetryStatus');
@@ -544,100 +467,72 @@
             document.getElementById('telemetryTime').textContent = webhookData.lastTime || "--";
         }
 
-        // CRUD Operations
         window.saveTask = async () => {
             if (!currentUser) return;
-            
             const id = document.getElementById('taskId').value;
             const name = document.getElementById('taskName').value.trim();
             const date = document.getElementById('taskDate').value;
             const category = document.getElementById('taskCategory').value;
             const notes = document.getElementById('taskNotes').value.trim();
             
-            // v2.5 Validation Strict Schema Layer
             const errEl = document.getElementById('validationError');
             if(name.length < 2) {
                 errEl.textContent = "Name must be at least 2 characters.";
-                errEl.classList.remove('hidden');
-                return;
+                errEl.classList.remove('hidden'); return;
             }
-            const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Strict ISO
-            if(!dateRegex.test(date)) {
-                errEl.textContent = "Date must be YYYY-MM-DD format.";
-                errEl.classList.remove('hidden');
-                return;
+            if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
+                errEl.textContent = "Date structural mismatch (YYYY-MM-DD template required).";
+                errEl.classList.remove('hidden'); return;
             }
             errEl.classList.add('hidden');
 
-            const payload = {
-                name, date, category, notes,
-                archived: false,
-                updatedAt: new Date().toISOString()
-            };
+            const payload = { name, date, category, notes, archived: false, updatedAt: new Date().toISOString() };
 
             try {
-                if (id) {
-                    await updateDoc(doc(getCollectionRef(), id), payload);
-                } else {
+                if (id) { await updateDoc(doc(getCollectionRef(), id), payload); } 
+                else {
                     payload.createdAt = new Date().toISOString();
                     await addDoc(getCollectionRef(), payload);
                 }
                 closeModal('taskModal');
-            } catch (e) {
-                console.error("Save error:", e);
-                alert("Error saving item.");
-            }
+            } catch (e) { console.error("Save failure logs:", e); }
         };
 
         window.deleteTask = async (id) => {
             if(!currentUser) return;
-            if(confirm("Permanently delete this tracked item?")) {
-                try { await deleteDoc(doc(getCollectionRef(), id)); } 
-                catch(e) { console.error(e); }
+            if(confirm("Permanently drop this log item?")) {
+                try { await deleteDoc(doc(getCollectionRef(), id)); } catch(e) { console.error(e); }
             }
-        }
+        };
 
         window.archiveTask = async (id) => {
             if(!currentUser) return;
-            try { 
-                await updateDoc(doc(getCollectionRef(), id), { archived: true, archivedAt: new Date().toISOString() }); 
-            } 
+            try { await updateDoc(doc(getCollectionRef(), id), { archived: true, archivedAt: new Date().toISOString() }); } 
             catch(e) { console.error(e); }
-        }
+        };
 
         window.unarchiveTask = async (id) => {
             if(!currentUser) return;
-            try { 
-                await updateDoc(doc(getCollectionRef(), id), { archived: false }); 
-            } 
-            catch(e) { console.error(e); }
-        }
+            try { await updateDoc(doc(getCollectionRef(), id), { archived: false }); } catch(e) { console.error(e); }
+        };
 
         window.editTask = (id) => {
             const task = allTasks.find(t => t.id === id);
             if(!task) return;
-            
             document.getElementById('taskId').value = task.id;
             document.getElementById('taskName').value = task.name;
             document.getElementById('taskDate').value = task.date;
             document.getElementById('taskCategory').value = task.category || 'Personal';
             document.getElementById('taskNotes').value = task.notes || '';
             document.getElementById('validationError').classList.add('hidden');
-            
             document.getElementById('modalTitle').textContent = "Edit Tracked Item";
             openModal('taskModal');
-        }
-
-        // --- RENDER & LOGIC MODULE ---
+        };
 
         function calculateDaysLeft(dateString) {
-            const due = new Date(dateString);
-            const now = new Date();
-            // Reset time to midnight for accurate day calculation
-            due.setHours(0,0,0,0);
-            now.setHours(0,0,0,0);
-            const diffTime = due - now;
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            const due = new Date(dateString); const now = new Date();
+            due.setHours(0,0,0,0); now.setHours(0,0,0,0);
+            return Math.ceil((due - now) / (1000 * 60 * 60 * 24));
         }
 
         function getCategoryColor(cat) {
@@ -653,57 +548,40 @@
         }
 
         function createTaskHTML(task, daysLeft) {
-            let urgencyClass = 'bg-slate-800 border-slate-700';
-            let textClass = 'text-slate-300';
-            
+            let urgencyClass = 'bg-slate-800 border-slate-700'; let textClass = 'text-slate-300';
             if (daysLeft < 0) {
-                urgencyClass = 'bg-red-900/30 border-red-500/50';
-                textClass = 'text-red-400 font-bold';
+                urgencyClass = 'bg-red-900/30 border-red-500/50'; textClass = 'text-red-400 font-bold';
                 daysLeft = `Expired (${Math.abs(daysLeft)}d ago)`;
             } else if (daysLeft <= 14) {
-                urgencyClass = 'bg-rose-900/20 border-rose-500/30';
-                textClass = 'text-rose-400';
+                urgencyClass = 'bg-rose-900/20 border-rose-500/30'; textClass = 'text-rose-400';
                 daysLeft = `${daysLeft}d left`;
-            } else if (daysLeft <= 45) {
-                textClass = 'text-amber-400';
-                daysLeft = `${daysLeft}d left`;
-            } else {
-                textClass = 'text-emerald-400';
-                daysLeft = `${daysLeft}d left`;
-            }
-
-            const catColor = getCategoryColor(task.category);
+            } else if (daysLeft <= 45) { textClass = 'text-amber-400'; daysLeft = `${daysLeft}d left`; } 
+            else { textClass = 'text-emerald-400'; daysLeft = `${daysLeft}d left`; }
 
             return `
                 <div class="${urgencyClass} border rounded-xl p-4 transition-all hover:border-slate-500 group relative">
                     <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] px-2 py-0.5 rounded border ${catColor} font-medium">${task.category || 'Personal'}</span>
+                        <span class="text-[10px] px-2 py-0.5 rounded border ${getCategoryColor(task.category)} font-medium">${task.category || 'Personal'}</span>
                         <span class="text-xs ${textClass} bg-slate-900/50 px-2 py-1 rounded">${daysLeft}</span>
                     </div>
                     <h4 class="font-bold text-white mb-1 truncate" title="${task.name}">${task.name}</h4>
                     <p class="text-xs text-slate-400 line-clamp-2 mb-3 h-8">${task.notes || '<i class="text-slate-600">No notes</i>'}</p>
-                    
                     <div class="flex gap-2 justify-end opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                        <button onclick="editTask('${task.id}')" class="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded transition-colors">Edit</button>
-                        <button onclick="archiveTask('${task.id}')" class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded transition-colors">Check Off</button>
+                        <button onclick="editTask('${task.id}')" class="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded">Edit</button>
+                        <button onclick="archiveTask('${task.id}')" class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded">Check Off</button>
                     </div>
                 </div>
             `;
         }
 
-        // Made available globally for Search input triggers
         window.renderTasks = () => {
             const searchTerm = document.getElementById('globalSearch').value.toLowerCase();
-            
-            // Filter active only + apply search
             let active = allTasks.filter(t => !t.archived);
             if(searchTerm) {
                 active = active.filter(t => t.name.toLowerCase().includes(searchTerm) || (t.notes && t.notes.toLowerCase().includes(searchTerm)));
             }
 
-            // v2.6+ Enforce Global Chronological Sort (soonest first)
             active.sort((a, b) => new Date(a.date) - new Date(b.date));
-
             const days = []; const weeks = []; const months = [];
             let cDays=0, cWeeks=0, cMonths=0;
 
@@ -714,17 +592,14 @@
                 else { months.push(t); cMonths++; }
             });
 
-            // Update Stats
             document.getElementById('statTotal').textContent = active.length;
             document.getElementById('statDays').textContent = cDays;
             document.getElementById('statWeeks').textContent = cWeeks;
             document.getElementById('statMonths').textContent = cMonths;
-
             document.getElementById('countDays').textContent = `${cDays} Items`;
             document.getElementById('countWeeks').textContent = `${cWeeks} Items`;
             document.getElementById('countMonths').textContent = `${cMonths} Items`;
 
-            // Render columns
             document.getElementById('colDays').innerHTML = days.map(t => createTaskHTML(t, calculateDaysLeft(t.date))).join('');
             document.getElementById('colWeeks').innerHTML = weeks.map(t => createTaskHTML(t, calculateDaysLeft(t.date))).join('');
             document.getElementById('colMonths').innerHTML = months.map(t => createTaskHTML(t, calculateDaysLeft(t.date))).join('');
@@ -733,20 +608,13 @@
         window.renderArchives = () => {
             const searchTerm = document.getElementById('archiveSearch').value.toLowerCase();
             const catFilter = document.getElementById('archiveFilterCat').value;
-            
             let archived = allTasks.filter(t => t.archived);
-            
             if(searchTerm) archived = archived.filter(t => t.name.toLowerCase().includes(searchTerm));
             if(catFilter !== 'All') archived = archived.filter(t => t.category === catFilter);
             
-            // Sort archives by recently archived (if available), otherwise by due date
-            archived.sort((a,b) => {
-                const dateA = a.archivedAt ? new Date(a.archivedAt) : new Date(a.date);
-                const dateB = b.archivedAt ? new Date(b.archivedAt) : new Date(b.date);
-                return dateB - dateA; // Newest first
-            });
+            archived.sort((a,b) => (b.archivedAt ? new Date(b.archivedAt) : new Date(b.date)) - (a.archivedAt ? new Date(a.archivedAt) : new Date(a.date)));
 
-            const html = archived.map(t => `
+            document.getElementById('archiveList').innerHTML = archived.map(t => `
                 <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-lg flex justify-between items-center hover:bg-slate-800 transition-colors">
                     <div>
                         <h4 class="text-white font-medium line-through text-slate-400">${t.name}</h4>
@@ -757,16 +625,14 @@
                         </div>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="unarchiveTask('${t.id}')" class="p-2 bg-slate-700 hover:bg-indigo-600 text-white rounded transition-colors" title="Restore"><i class="ph ph-arrow-counter-clockwise"></i></button>
-                        <button onclick="deleteTask('${t.id}')" class="p-2 bg-slate-700 hover:bg-red-600 text-white rounded transition-colors" title="Perm Delete"><i class="ph ph-trash"></i></button>
+                        <button onclick="unarchiveTask('${t.id}')" class="p-2 bg-slate-700 text-white rounded"><i class="ph ph-arrow-counter-clockwise"></i></button>
+                        <button onclick="deleteTask('${t.id}')" class="p-2 bg-slate-700 text-white rounded"><i class="ph ph-trash"></i></button>
                     </div>
                 </div>
-            `).join('');
-
-            document.getElementById('archiveList').innerHTML = html || '<div class="text-center text-slate-500 py-8">No completed items found.</div>';
+            `).join('') || '<div class="text-center text-slate-500 py-8">No completed items found.</div>';
         }
 
-        // --- UI UTILS ---
+        // Window level structural hooks
         window.openModal = (id) => {
             if(id === 'taskModal') {
                 document.getElementById('taskForm').reset();
@@ -775,11 +641,10 @@
                 document.getElementById('validationError').classList.add('hidden');
             }
             document.getElementById(id).classList.remove('hidden');
-        }
+        };
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
-        window.openArchive = () => { renderArchives(); openModal('archiveModal'); }
-        window.openSettings = () => { loadSettings(); updateTelemetryUI(); openModal('settingsModal'); }
-
+        window.openArchive = () => { renderArchives(); openModal('archiveModal'); };
+        window.openSettings = () => { loadSettings(); updateTelemetryUI(); openModal('settingsModal'); };
     </script>
 </body>
 </html>
