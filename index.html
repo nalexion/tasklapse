@@ -1,64 +1,83 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskLapse v2.7.1 | Secure Cloud Expiration Tracker</title>
-    
-    <!-- Standard Browser Tab Favicon -->
-    <link rel="icon" type="image/jpeg" href="favicon.jpg?v=3">
+    <!-- Favicon with cache-busting (?v=3) to force the browser to update -->
+    <link rel="icon" href="favicon.jpg?v=3" type="image/jpeg">
     <link rel="shortcut icon" href="favicon.jpg?v=3">
-    
-    <!-- OS Taskbar, iOS Home Screen, and Android App Icon -->
-    <link rel="apple-touch-icon" sizes="512x512" href="logo.png?v=3">
-    <meta name="apple-mobile-web-app-title" content="TaskLapse">
-    <meta name="application-name" content="TaskLapse">
-
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Phosphor Icons -->
-    <script src="https://unpkg.com/@phosphor-icons/web"></script>
-
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        slate: {
-                            850: '#151e2e',
-                            900: '#0f172a',
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <!-- Google Fonts (Inter) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #475569; }
-        body { background-color: #0f172a; color: #f8fafc; }
-        .glass-panel { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
+        :root { color-scheme: dark; }
+        body { font-family: 'Inter', sans-serif; background-color: #0b0f19; }
+        .date-wrapper { position: relative; }
+        .date-wrapper input[type="date"]::-webkit-calendar-picker-indicator {
+            position: absolute; top: 0; right: 0; width: 44px; height: 100%; margin: 0; padding: 0; opacity: 0; cursor: pointer; z-index: 10;
+        }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: #111827; }
+        ::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #4b5563; }
     </style>
 </head>
-<body class="antialiased min-h-screen flex flex-col">
+<body class="text-slate-100 min-h-screen flex flex-col antialiased">
 
-    <!-- AUTHENTICATION SCREEN -->
-    <div id="authScreen" class="min-h-screen flex items-center justify-center p-4 z-50 absolute inset-0 bg-slate-900">
-        <div class="max-w-md w-full glass-panel rounded-2xl p-8 shadow-2xl relative overflow-hidden">
-            <div class="text-center mb-8">
-                <img src="logo.png" alt="TaskLapse Logo" class="w-20 h-20 mx-auto object-cover rounded-xl shadow-lg border border-slate-700 mb-4" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFWMjkyRSIgcng9IjIwIi8+PHBhdGggZD0iTTMwIDUwbDE1IDE1IDMwLTMwIiBmaWxsPSJub25lIiBzdHJva2U9IiM4MTg0RkYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=='">
-                <h2 class="text-3xl font-bold text-white mb-1 tracking-tight">TaskLapse <span class="text-indigo-400 text-sm align-top">v2.7.1</span></h2>
-                <p class="text-slate-400 text-sm">Secure Cloud Expiration Tracker</p>
+    <div id="choiceScreen" class="hidden fixed inset-0 z-50 bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl p-6 md:p-8 shadow-2xl space-y-8 animate-in fade-in zoom-in-95 duration-150">
+            <div class="text-center space-y-2">
+                <!-- UI Logo with rounded clipping -->
+                <div class="w-16 h-16 mx-auto mb-2">
+                    <img src="logo.png" alt="TaskLapse Logo" class="w-full h-full object-cover rounded-2xl shadow-lg border border-slate-800">
+                </div>
+                <h2 class="text-2xl font-extrabold text-white tracking-wide mt-2">Welcome to TaskLapse v2.7.1</h2>
+                <p class="text-sm text-slate-400 max-w-md mx-auto">Track your deadlines with precision. Choose how you want to save your data:</p>
             </div>
 
-            <div id="authError" class="hidden mb-4 p-3 bg-red-500/20 border border-red-500/50 rounded-lg text-red-200 text-sm text-center"></div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button onclick="selectStorageMode('local')" class="group text-left bg-slate-950 hover:bg-slate-900 border border-slate-850 hover:border-indigo-500/50 p-6 rounded-2xl transition duration-200 flex flex-col justify-between space-y-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-900 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-950/20 rounded-xl w-fit border border-slate-800 transition duration-250">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Offline Local Storage</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Fast and 100% private. Data is saved directly on this web browser. No accounts required.</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">Start Offline &rarr;</span>
+                </button>
 
-            <!-- Google Sign-In Button (Popup Variant) -->
-            <button onclick="handleGoogleLogin()" class="w-full flex justify-center items-center gap-3 bg-white hover:bg-slate-100 text-slate-900 font-semibold py-2.5 px-4 border border-slate-200 rounded-lg shadow-sm transition-all focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900">
+                <button onclick="selectStorageMode('cloud')" class="group text-left bg-slate-950 hover:bg-slate-900 border border-slate-850 hover:border-indigo-500/50 p-6 rounded-2xl transition duration-200 flex flex-col justify-between space-y-4 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    <div class="space-y-2">
+                        <div class="p-2 bg-slate-900 text-slate-400 group-hover:text-indigo-400 group-hover:bg-indigo-950/20 rounded-xl w-fit border border-slate-800 transition duration-250">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+                        </div>
+                        <h3 class="text-lg font-bold text-white group-hover:text-indigo-400 transition">Real-time Cloud Sync</h3>
+                        <p class="text-xs text-slate-400 leading-relaxed">Sync perfectly across devices with secure cloud infrastructure.</p>
+                    </div>
+                    <span class="inline-flex items-center text-xs text-indigo-400 font-semibold group-hover:translate-x-1 transition-transform">Connect Cloud Account &rarr;</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="authScreen" class="hidden fixed inset-0 z-40 bg-slate-950 flex flex-col items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl p-6 md:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 duration-150">
+            <div class="text-center space-y-2">
+                <!-- UI Logo with rounded clipping -->
+                <div class="w-14 h-14 mx-auto mb-2">
+                    <img src="logo.png" alt="TaskLapse Logo" class="w-full h-full object-cover rounded-xl shadow-lg border border-slate-800">
+                </div>
+                <h2 id="authScreenTitle" class="text-xl font-extrabold text-white tracking-wide">Secure TaskLapse Login</h2>
+                <p id="authScreenDesc" class="text-xs text-slate-400">Access real-time synced items</p>
+            </div>
+
+            <!-- v2.7.1 NEW: Google Sign-In Button -->
+            <button type="button" onclick="handleGoogleLogin()" class="w-full flex justify-center items-center gap-3 bg-white hover:bg-slate-100 text-slate-900 font-semibold py-2.5 px-4 border border-slate-200 rounded-lg shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-indigo-600">
                 <svg class="w-5 h-5" viewBox="0 0 24 24">
                     <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                     <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -68,599 +87,1456 @@
                 Sign in with Google
             </button>
 
-            <!-- Separator -->
-            <div class="relative flex items-center py-5">
-                <div class="flex-grow border-t border-slate-700"></div>
-                <span class="flex-shrink-0 mx-4 text-slate-400 text-xs uppercase tracking-wider font-semibold">Or email</span>
-                <div class="flex-grow border-t border-slate-700"></div>
+            <div class="relative flex items-center py-2 text-slate-700">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink mx-4 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Or email</span>
+                <div class="flex-grow border-t border-slate-800"></div>
             </div>
 
-            <form id="loginForm" class="space-y-4" onsubmit="event.preventDefault(); handleEmailLogin();">
+            <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Email Address</label>
-                    <input type="email" id="emailInput" class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="you@example.com" required>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="authEmail" required placeholder="yourname@domain.com" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Password</label>
-                    <input type="password" id="passwordInput" class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-2.5 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all" placeholder="••••••••" required>
+                    <div class="flex justify-between items-center mb-1">
+                        <label class="block text-xs font-semibold text-slate-300">Password</label>
+                        <span class="text-[10px] text-slate-500">Min. 6 characters</span>
+                    </div>
+                    <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
-                
-                <div class="pt-2 space-y-3">
-                    <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
-                        Sign In / Register
-                    </button>
-                    <button type="button" onclick="handleGuestLogin()" class="w-full bg-slate-800 hover:bg-slate-700 text-slate-300 font-medium py-2.5 px-4 rounded-lg transition-colors border border-slate-700">
-                        Continue as Guest (Local Only)
-                    </button>
+                <div class="flex items-center justify-between pt-1">
+                    <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-xs text-indigo-400 hover:text-indigo-300 font-semibold">Need to Create Account?</button>
                 </div>
+                <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm py-2.5 rounded-lg shadow-lg shadow-indigo-600/20 transition">Sign In</button>
             </form>
+            <div class="relative flex py-2 items-center text-slate-700">
+                <div class="flex-grow border-t border-slate-800"></div>
+                <span class="flex-shrink mx-4 text-[10px] text-slate-500 uppercase tracking-wider font-semibold">Or Switch Layouts</span>
+                <div class="flex-grow border-t border-slate-800"></div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="signInAnonymouslyFallback()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-200 text-xs font-semibold py-2.5 rounded-lg transition">⚡ Guest Sync</button>
+                <button onclick="changeMindReturnToChoice()" class="bg-slate-800 hover:bg-slate-750 border border-slate-700 text-slate-400 text-xs font-semibold py-2.5 rounded-lg transition">📍 Go Offline</button>
+            </div>
         </div>
     </div>
 
-    <!-- MAIN DASHBOARD -->
-    <div id="dashboardScreen" class="hidden flex-col min-h-screen">
-        <!-- HEADER -->
+    <div id="mainDashboard" class="hidden flex-col flex-grow">
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-                
-                <!-- Left: Logo & Branding -->
+                <!-- LEFT SIDE: Branding -->
                 <div class="flex items-center space-x-3">
-                    <img src="logo.png" alt="TaskLapse Logo" class="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-700" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFWMjkyRSIgcng9IjIwIi8+PHBhdGggZD0iTTMwIDUwbDE1IDE1IDMwLTMwIiBmaWxsPSJub25lIiBzdHJva2U9IiM4MTg0RkYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=='">
+                    <!-- UI Logo with rounded clipping -->
+                    <div class="w-10 h-10 shrink-0">
+                        <img src="logo.png" alt="TaskLapse Logo" class="w-full h-full object-cover rounded-xl shadow-sm border border-slate-800">
+                    </div>
                     <div>
-                        <!-- Version badge v2.7.1 -->
                         <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                            TaskLapse <span class="text-indigo-400 text-xs font-normal align-middle">v2.7.1</span>
+                            TaskLapse <span class="text-slate-500 font-mono text-[10px] ml-1">v2.7.1</span>
                             <span id="syncBadge" class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
                         </h1>
                         <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
                     </div>
                 </div>
-
-                <!-- Right: Search & Actions -->
-                <div class="flex items-center space-x-3">
-                    <!-- Global Search -->
-                    <div class="relative hidden md:block w-48 lg:w-64">
-                        <i class="ph ph-magnifying-glass absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
-                        <input type="text" id="globalSearch" placeholder="Search tasks..." class="w-full bg-slate-800 border border-slate-700 text-sm rounded-lg pl-9 pr-3 py-2 text-white focus:outline-none focus:border-indigo-500 transition-colors placeholder-slate-500" onkeyup="renderTasks()">
+                
+                <!-- RIGHT SIDE: Search & Actions aligned centrally -->
+                <div class="flex items-center space-x-2 sm:space-x-3">
+                    <!-- SEARCH BAR IN HEADER (Hidden on very small screens, visible md+) -->
+                    <div class="relative w-40 lg:w-64 shrink-0 hidden md:flex items-center">
+                        <input type="text" id="dashboardSearchInput" oninput="renderDashboardUI()" placeholder="Search active tasks..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition" />
+                        <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-500">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                        </div>
                     </div>
-
-                    <button onclick="openModal('taskModal')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium text-sm transition-colors flex items-center gap-2 shadow-lg shadow-indigo-500/20">
-                        <i class="ph ph-plus-circle text-lg"></i> <span class="hidden sm:inline">Track New Item</span>
+                    
+                    <button onclick="openModal('addItemModal')" class="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold shadow-lg shadow-indigo-600/20 transition duration-150 shrink-0">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        <span class="hidden sm:inline">Track New Item</span>
                     </button>
-                    <button onclick="openArchive()" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700" title="Archives">
-                        <i class="ph ph-archive-box text-xl"></i>
+                    <!-- Archive Button -->
+                    <button onclick="openArchiveModal()" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150 flex items-center justify-center shrink-0" title="Completed History Archive">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
                     </button>
-                    <button onclick="openSettings()" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors border border-slate-700" title="Settings & Webhooks">
-                        <i class="ph ph-gear text-xl"></i>
+                    <!-- Settings Button -->
+                    <button onclick="openModal('settingsModal')" class="p-2 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150 flex items-center justify-center shrink-0" title="System Settings">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                     </button>
-                    <button onclick="handleLogout()" class="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors ml-2" title="Sign Out">
-                        <i class="ph ph-sign-out text-xl"></i>
+                    <!-- Logout Button -->
+                    <button id="logoutBtn" onclick="handleLogout()" class="p-2 text-rose-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg border border-slate-800 transition duration-150 shrink-0" title="Sign Out">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>
                     </button>
+                </div>
+            </div>
+            
+            <!-- MOBILE SEARCH BAR (Visible only on small screens) -->
+            <div class="px-4 pb-3 md:hidden">
+                <div class="relative w-full">
+                    <input type="text" id="dashboardSearchInputMobile" oninput="document.getElementById('dashboardSearchInput').value = this.value; renderDashboardUI();" placeholder="Search active tasks..." class="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition" />
+                    <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-500">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </div>
                 </div>
             </div>
         </header>
 
-        <!-- MAIN CONTENT -->
-        <main class="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-            
-            <!-- STATS ROW -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="glass-panel p-4 rounded-xl flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-lg bg-indigo-500/20 flex items-center justify-center text-indigo-400">
-                        <i class="ph ph-clipboard-text text-2xl"></i>
+        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col space-y-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-blue-500/10 text-blue-400 rounded-lg border border-blue-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Total Tracked</p>
-                        <p class="text-2xl font-bold text-white" id="statTotal">0</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Total Tracked</p>
+                        <p class="text-2xl font-bold text-white mt-1" id="statTotal">0</p>
                     </div>
                 </div>
-                <div class="glass-panel p-4 rounded-xl flex items-center gap-4 border-rose-500/30">
-                    <div class="w-12 h-12 rounded-lg bg-rose-500/20 flex items-center justify-center text-rose-400">
-                        <i class="ph ph-warning-circle text-2xl"></i>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-rose-500/10 text-rose-400 rounded-lg border border-rose-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Due in Days</p>
-                        <p class="text-2xl font-bold text-rose-400" id="statDays">0</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Due in Days</p>
+                        <p class="text-2xl font-bold text-rose-500 mt-1" id="statDays">0</p>
                     </div>
                 </div>
-                <div class="glass-panel p-4 rounded-xl flex items-center gap-4 border-amber-500/30">
-                    <div class="w-12 h-12 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400">
-                        <i class="ph ph-clock text-2xl"></i>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Due in Weeks</p>
-                        <p class="text-2xl font-bold text-amber-400" id="statWeeks">0</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Due in Weeks</p>
+                        <p class="text-2xl font-bold text-amber-500 mt-1" id="statWeeks">0</p>
                     </div>
                 </div>
-                <div class="glass-panel p-4 rounded-xl flex items-center gap-4 border-emerald-500/30">
-                    <div class="w-12 h-12 rounded-lg bg-emerald-500/20 flex items-center justify-center text-emerald-400">
-                        <i class="ph ph-check-circle text-2xl"></i>
+                <div class="bg-slate-900 border border-slate-800 rounded-xl p-5 flex items-center space-x-4">
+                    <div class="p-3 bg-emerald-500/10 text-emerald-400 rounded-lg border border-emerald-500/20">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
                     </div>
                     <div>
-                        <p class="text-xs text-slate-400 font-medium tracking-wider uppercase">Due in Months</p>
-                        <p class="text-2xl font-bold text-emerald-400" id="statMonths">0</p>
+                        <p class="text-xs text-slate-400 uppercase tracking-wider font-semibold">Due in Months</p>
+                        <p class="text-2xl font-bold text-emerald-500 mt-1" id="statMonths">0</p>
                     </div>
                 </div>
             </div>
 
-            <!-- BOARD COLUMNS -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-                
-                <!-- Days Column -->
-                <div class="glass-panel rounded-xl flex flex-col h-full min-h-[500px]">
-                    <div class="p-4 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30 rounded-t-xl">
-                        <h3 class="font-bold text-rose-400 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-rose-500 animate-pulse"></span> DUE IN DAYS
-                        </h3>
-                        <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300" id="countDays">0 Items</span>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row gap-3 w-full lg:w-auto overflow-x-auto pb-1 sm:pb-0">
+                    <div class="flex flex-wrap gap-2 shrink-0" id="filterBar">
+                        <button onclick="setCategoryFilter('all')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-indigo-600/20 border-indigo-500/50 text-indigo-300" data-category="all">All Categories</button>
+                        <button onclick="setCategoryFilter('me')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="me">👤 My Health</button>
+                        <button onclick="setCategoryFilter('dog')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="dog">🐾 Dog's Medical/Care</button>
+                        <button onclick="setCategoryFilter('vehicle')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="vehicle">🚗 Auto / Moto</button>
+                        <button onclick="setCategoryFilter('subscription')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="subscription">💳 Subscriptions</button>
+                        <button onclick="setCategoryFilter('household')" class="category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition duration-150 bg-slate-800 border-slate-700 text-slate-300 hover:border-slate-600" data-category="household">🏠 Household & Other</button>
                     </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colDays"></div>
                 </div>
-
-                <!-- Weeks Column -->
-                <div class="glass-panel rounded-xl flex flex-col h-full min-h-[500px]">
-                    <div class="p-4 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30 rounded-t-xl">
-                        <h3 class="font-bold text-amber-400 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-amber-500"></span> DUE IN WEEKS
-                        </h3>
-                        <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300" id="countWeeks">0 Items</span>
-                    </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colWeeks"></div>
+                <div class="flex items-center shrink-0">
+                    <button onclick="triggerDailyNotificationCheck()" class="w-full sm:w-auto flex justify-center items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs tracking-wide shadow-lg shadow-amber-500/10 transition duration-150">
+                        <svg class="w-4 h-4 text-slate-950" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z" /></svg>
+                        <span>Simulate Daily Alarm Check</span>
+                    </button>
                 </div>
-
-                <!-- Months Column -->
-                <div class="glass-panel rounded-xl flex flex-col h-full min-h-[500px]">
-                    <div class="p-4 border-b border-slate-700/50 flex justify-between items-center bg-slate-800/30 rounded-t-xl">
-                        <h3 class="font-bold text-emerald-400 flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-emerald-500"></span> DUE IN MONTHS
-                        </h3>
-                        <span class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300" id="countMonths">0 Items</span>
-                    </div>
-                    <div class="p-4 flex-1 overflow-y-auto space-y-3" id="colMonths"></div>
-                </div>
-
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Days</h2>
+                        </div>
+                        <span id="countDays" class="text-xs bg-rose-500/10 text-rose-400 font-semibold px-2 py-0.5 rounded-full border border-rose-500/20">0 Items</span>
+                    </div>
+                    <div class="flex-grow space-y-3.5 overflow-y-auto" id="colDays"></div>
+                </div>
+                <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Weeks</h2>
+                        </div>
+                        <span id="countWeeks" class="text-xs bg-amber-500/10 text-amber-400 font-semibold px-2 py-0.5 rounded-full border border-amber-500/20">0 Items</span>
+                    </div>
+                    <div class="flex-grow space-y-3.5 overflow-y-auto" id="colWeeks"></div>
+                </div>
+                <div class="flex flex-col h-full bg-slate-950 rounded-2xl border border-slate-800/80 p-5 min-h-[500px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2.5">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                            <h2 class="text-sm font-bold text-white tracking-wide uppercase">Due in Months</h2>
+                        </div>
+                        <span id="countMonths" class="text-xs bg-emerald-500/10 text-emerald-400 font-semibold px-2 py-0.5 rounded-full border border-emerald-500/20">0 Items</span>
+                    </div>
+                    <div class="flex-grow space-y-3.5 overflow-y-auto" id="colMonths"></div>
+                </div>
+            </div>
+
+            <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 pt-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col h-[400px]">
+                    <div class="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <div class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded-md border border-indigo-500/20">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                            </div>
+                            <div>
+                                <h2 class="text-sm font-bold text-white">Triggered Email Notifications</h2>
+                                <p class="text-[10px] text-slate-400">Preview of automated warning emails</p>
+                            </div>
+                        </div>
+                        <button onclick="clearOutbox()" class="text-xs text-slate-400 hover:text-white transition duration-150">Clear Logs</button>
+                    </div>
+                    <div class="flex-grow overflow-y-auto space-y-3 pr-2" id="emailOutbox">
+                        <div class="h-full flex flex-col items-center justify-center text-center p-4" id="emptyOutboxMessage">
+                            <svg class="w-12 h-12 text-slate-700 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0a2 2 0 01-2 2H6a2 2 0 01-2-2m16 0V9a2 2 0 00-2-2H6a2 2 0 00-2 2v4.5m12+3a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                            <p class="text-xs font-semibold text-slate-500">No email alerts triggered today.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 flex flex-col justify-between h-[400px]">
+                    <div>
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span>🚀 Cloud Notification Integrations</span>
+                            <span id="cloudStatusBadge" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">Active</span>
+                        </h3>
+                        <p class="text-xs text-slate-400 mt-1 mb-4">Set up a Make/Zapier webhook to turn these simulation logs into actual emails directly inside your personal mailbox.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Incoming Webhook Endpoint</label>
+                                <input type="url" id="webhookInput" placeholder="https://hook.make.com/..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1.5">Webhook Authentication Secret</label>
+                                <input type="password" id="webhookSecretInput" placeholder="Private payload secret" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- v2.5.0 WEBHOOK LOG UI -->
+                    <div id="webhookLogSection" class="bg-slate-950 border border-slate-850 p-3 rounded-xl mt-2 flex flex-col hidden">
+                        <div class="flex items-center justify-between border-b border-slate-800 pb-1.5 mb-1.5">
+                            <span class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Last Pipeline Delivery Status</span>
+                            <span id="webhookStatusPill" class="text-[9px] font-bold px-1.5 py-0.5 rounded">Unknown</span>
+                        </div>
+                        <div class="flex justify-between items-center text-[11px]">
+                            <span class="text-slate-400" id="webhookLogAction">Payload Status:</span>
+                            <span class="font-mono text-slate-300" id="webhookLogTime">Never triggered</span>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-800 flex justify-between items-center mt-4">
+                        <span class="text-[11px] text-indigo-400 font-semibold" id="cloudStatusTag">Sync status: Active</span>
+                        <button onclick="saveProfileSettings()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-lg text-xs font-semibold transition">Save Settings</button>
+                    </div>
+                </div>
+            </section>
         </main>
     </div>
 
-    <!-- MODALS -->
-    <div id="taskModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
-            <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
-                <h3 class="text-lg font-bold text-white" id="modalTitle">Track New Item</h3>
-                <button onclick="closeModal('taskModal')" class="text-slate-400 hover:text-white transition-colors"><i class="ph ph-x text-xl"></i></button>
+    <!-- ARCHIVE MODAL (v2.5.0 Search & Filtering Integrated) -->
+    <div id="archiveModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150 flex flex-col max-h-[85vh]">
+            <div class="bg-slate-900/50 px-6 py-4 border-b border-slate-800 flex items-center justify-between shrink-0">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <span class="p-1.5 bg-slate-800 text-slate-400 rounded border border-slate-700">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" /></svg>
+                    </span>
+                    <span>Completed History & Archives</span>
+                </h3>
+                <button onclick="closeModal('archiveModal')" class="text-slate-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
             </div>
-            <form id="taskForm" onsubmit="event.preventDefault(); saveTask();" class="p-5 space-y-4">
-                <input type="hidden" id="taskId">
-                <div id="validationError" class="hidden text-xs text-red-400 bg-red-500/10 p-2 rounded border border-red-500/20"></div>
+            
+            <!-- v2.5.0 Filtering Sub-Header Components -->
+            <div class="px-6 py-3 bg-slate-950/40 border-b border-slate-850 grid grid-cols-1 sm:grid-cols-2 gap-3 shrink-0">
+                <div class="relative">
+                    <input type="text" id="archiveSearchInput" oninput="renderArchiveUI()" placeholder="Search archive logs by title..." class="w-full bg-slate-950 border border-slate-850 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition" />
+                    <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-500">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                    </div>
+                </div>
+                <select id="archiveCategoryFilter" onchange="renderArchiveUI()" class="w-full bg-slate-950 border border-slate-850 rounded-lg px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition">
+                    <option value="all">All Categories</option>
+                    <option value="me">👤 My Health</option>
+                    <option value="dog">🐾 Dog's Medical/Care</option>
+                    <option value="vehicle">🚗 Auto / Moto</option>
+                    <option value="subscription">💳 Subscriptions</option>
+                    <option value="household">🏠 Household & Other</option>
+                </select>
+            </div>
+
+            <div class="p-6 overflow-y-auto flex-grow bg-slate-900" id="archiveList">
+                <!-- Archive cards injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TRACK NEW ITEM MODAL -->
+    <div id="addItemModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-lg rounded-2xl overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div class="bg-slate-900/50 px-6 py-4 border-b border-slate-800 flex items-center justify-between">
+                <h3 class="text-base font-bold text-white flex items-center gap-2" id="modalTitle">
+                    <span class="p-1.5 bg-indigo-500/10 text-indigo-400 rounded border border-indigo-500/20">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                    </span>
+                    <span>Track New Item</span>
+                </h3>
+                <button onclick="closeModal('addItemModal')" class="text-slate-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+            </div>
+            <form id="itemForm" onsubmit="handleFormSubmit(event)" class="px-6 py-4 space-y-4">
+                <input type="hidden" id="itemId">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Item Name</label>
-                    <input type="text" id="taskName" required minlength="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none" placeholder="e.g., Driver's License">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Item / Task Name <span class="text-rose-500">*</span></label>
+                    <input type="text" id="itemName" required placeholder="e.g. Dog dewormer pill, Auto insurance renewal" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Category <span class="text-rose-500">*</span></label>
+                        <select id="itemCategory" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                            <option value="me">👤 My Health</option>
+                            <option value="dog">🐾 Dog's Medical/Care</option>
+                            <option value="vehicle">🚗 Auto / Moto</option>
+                            <option value="subscription">💳 Subscriptions</option>
+                            <option value="household">🏠 Household & Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1">Target Expiry Date <span class="text-rose-500">*</span></label>
+                        <div class="date-wrapper">
+                            <input type="date" id="itemExpiryDate" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 pr-10 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition cursor-pointer" />
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center text-indigo-400 pointer-events-none transition"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg></div>
+                        </div>
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Category</label>
-                    <select id="taskCategory" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none">
-                        <option value="Personal">Personal</option>
-                        <option value="Household">Household</option>
-                        <option value="Health">Health / Medical</option>
-                        <option value="Auto">Auto / Moto</option>
-                        <option value="Subscriptions">Subscriptions</option>
-                        <option value="Work">Work / Business</option>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Does this repeat / recur?</label>
+                    <select id="itemRecurrence" onchange="toggleRecurrenceHelper()" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2.5 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition">
+                        <option value="none">Once-off (No repeat)</option>
+                        <option value="weekly">Every Week</option>
+                        <option value="monthly">Every Month</option>
+                        <option value="3months">Every 3 Months</option>
+                        <option value="6months">Every 6 Months</option>
+                        <option value="yearly">Every Year</option>
+                        <option value="2years">Every 2 Years</option>
                     </select>
+                    <p class="text-[10px] text-slate-400 mt-1" id="recurrenceHelpText">Once complete, document archives into history.</p>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Expiration / Due Date</label>
-                    <input type="date" id="taskDate" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none [color-scheme:dark]">
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">When should we email you alerts?</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 bg-slate-950 p-2.5 rounded-lg border border-slate-800">
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" id="alert30" value="30" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4"><span class="text-xs text-slate-300">30d out</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" id="alert7" value="7" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4"><span class="text-xs text-slate-300">7d out</span></label>
+                        <label class="flex items-center space-x-2 cursor-pointer"><input type="checkbox" id="alertFinal" value="final" checked class="rounded border-slate-800 text-indigo-600 focus:ring-indigo-500 bg-slate-900 w-4 h-4"><span class="text-xs text-slate-300">1 day or less</span></label>
+                    </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Notes (Optional)</label>
-                    <textarea id="taskNotes" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none resize-none" placeholder="Details..."></textarea>
+                    <label class="block text-xs font-semibold text-slate-300 mb-1">Details / Notes</label>
+                    <textarea id="itemNotes" rows="2" placeholder="Dosage, prescription..." class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-xs text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition resize-none"></textarea>
                 </div>
-                <div class="pt-4 flex justify-end gap-3 border-t border-slate-700">
-                    <button type="button" onclick="closeModal('taskModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white">Cancel</button>
-                    <button type="submit" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md">Save Item</button>
+                <div class="pt-4 border-t border-slate-800 flex justify-end space-x-3">
+                    <button type="button" onclick="closeModal('addItemModal')" class="bg-slate-800 hover:bg-slate-750 text-slate-300 px-4 py-2.5 rounded-lg text-xs font-semibold transition">Cancel</button>
+                    <button type="submit" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-lg text-xs font-semibold transition shadow-lg shadow-indigo-600/10">Save Item</button>
                 </div>
             </form>
         </div>
     </div>
 
-    <div id="archiveModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-2xl max-h-[80vh] flex flex-col rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
-            <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="ph ph-archive-box"></i> Completed History</h3>
-                <button onclick="closeModal('archiveModal')" class="text-slate-400 hover:text-white"><i class="ph ph-x text-xl"></i></button>
+    <!-- SYSTEM CONFIGURATION MODAL -->
+    <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-50 p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-md rounded-2xl overflow-hidden shadow-2xl p-6">
+            <div class="flex justify-between items-center pb-3 border-b border-slate-800 mb-4">
+                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /></svg>
+                    <span>System Settings & Storage Drivers</span>
+                </h3>
+                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white transition">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
             </div>
-            <div class="p-4 border-b border-slate-700 bg-slate-900/50 flex gap-3">
-                <input type="text" id="archiveSearch" placeholder="Search archives..." class="flex-1 bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white standard-focus outline-none" onkeyup="renderArchives()">
-                <select id="archiveFilterCat" class="bg-slate-800 border border-slate-700 text-sm rounded-lg px-3 py-2 text-white outline-none" onchange="renderArchives()">
-                    <option value="All">All Categories</option>
-                    <option value="Personal">Personal</option>
-                    <option value="Household">Household</option>
-                    <option value="Health">Health / Medical</option>
-                    <option value="Auto">Auto / Moto</option>
-                    <option value="Subscriptions">Subscriptions</option>
-                </select>
-            </div>
-            <div class="p-5 overflow-y-auto flex-1 space-y-3" id="archiveList"></div>
-        </div>
-    </div>
-
-    <div id="settingsModal" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border border-slate-700">
-            <div class="p-5 border-b border-slate-700 flex justify-between items-center bg-slate-800/50">
-                <h3 class="text-lg font-bold text-white flex items-center gap-2"><i class="ph ph-plugs-connected"></i> Outbound Webhooks</h3>
-                <button onclick="closeModal('settingsModal')" class="text-slate-400 hover:text-white"><i class="ph ph-x text-xl"></i></button>
-            </div>
-            <div class="p-5 space-y-4">
-                <p class="text-sm text-slate-400">Configure webhooks for daily alert triggers.</p>
+            <div class="space-y-4 text-xs">
                 <div>
-                    <label class="block text-sm font-medium text-slate-300 mb-1">Webhook URL</label>
-                    <input type="url" id="webhookUrl" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-white focus:border-indigo-500 outline-none text-sm" placeholder="https://hook.make.com/...">
+                    <h4 class="font-semibold text-slate-300 mb-1">Simulated Target Email</h4>
+                    <input type="email" id="emailInput" class="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 px-3 text-slate-200 focus:outline-none focus:ring-2 focus:ring-indigo-600 transition" />
                 </div>
-                <div class="mt-6 pt-4 border-t border-slate-700">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Delivery Telemetry</h4>
-                    <div id="webhookLogSection" class="bg-slate-900 border border-slate-800 rounded p-3 text-xs font-mono text-slate-400">
-                        <div class="flex justify-between items-center mb-1">
-                            <span>Status:</span> <span id="telemetryStatus" class="text-slate-500">Awaiting dispatch</span>
-                        </div>
-                        <div class="flex justify-between items-center">
-                            <span>Last Ping:</span> <span id="telemetryTime" class="text-slate-500">--</span>
-                        </div>
+                
+                <!-- NEW: Account Diagnostics Panel -->
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-slate-300">Account Diagnostics</h4>
+                    <div class="text-[11px] text-slate-400">
+                        Active Database UID:<br>
+                        <span id="diagnosticUid" class="text-indigo-400 font-mono select-all break-all">--</span>
                     </div>
                 </div>
 
-                <!-- NEW DIAGNOSTIC PANEL -->
-                <div class="mt-4 pt-4 border-t border-slate-700">
-                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Account Diagnostics</h4>
-                    <div class="bg-slate-900 border border-slate-800 rounded p-3 text-xs font-mono text-slate-400">
-                        <span class="text-slate-500">Your Active UID:</span> <br>
-                        <span id="diagnosticUid" class="text-indigo-400 break-all select-all">--</span>
+                <div class="bg-slate-950 p-3 rounded-lg border border-slate-800 space-y-2">
+                    <h4 class="font-semibold text-slate-300">Data Backups & Migrations</h4>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="exportActiveBackupData()" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Export Backup</button>
+                        <button id="importBtn" onclick="triggerImportSelection()" class="flex-1 bg-slate-800 hover:bg-slate-750 text-slate-200 py-1.5 rounded text-[11px] font-semibold transition">Import Backup</button>
+                        <input type="file" id="importFile" class="hidden" accept=".json" onchange="importBackupData(event)">
                     </div>
                 </div>
-
-                <div class="pt-4 flex justify-end gap-3 border-t border-slate-700 mt-4">
-                    <button type="button" onclick="closeModal('settingsModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white">Cancel</button>
-                    <button type="button" onclick="saveSettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md">Save URL</button>
+                <div id="localUpgradeBanner" class="hidden bg-indigo-600/10 border border-indigo-500/20 p-4 rounded-xl space-y-2">
+                    <h4 class="font-bold text-white text-xs">🚀 Move to Cloud Syncing</h4>
+                    <button onclick="switchToCloudMode()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-1.5 rounded text-[11px] transition">Upgrade to Cloud Sync</button>
+                </div>
+                <div id="cloudDisconnectBanner" class="hidden bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h4 class="font-bold text-white text-xs">☁️ Cloud Integration Active</h4>
+                    <button onclick="switchToLocalMode()" class="w-full bg-slate-800 hover:bg-slate-750 text-slate-300 font-semibold py-1.5 rounded text-[11px] transition">Disconnect Cloud Sync</button>
+                </div>
+                <div class="flex items-center justify-between pt-3 border-t border-slate-800">
+                    <button onclick="wipeCurrentData()" class="text-rose-500 hover:text-rose-400 font-semibold">Delete Storage Data</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- APP LOGIC -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        // Switched securely back to signInWithPopup to prevent cross-site tracking blocks
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
-        import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    <!-- SYSTEM ALERTS OVERLAY -->
+    <div id="dialogModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-sm rounded-xl overflow-hidden shadow-2xl p-5 text-center">
+            <div class="flex items-center justify-center text-amber-400 mb-3" id="dialogIcon"></div>
+            <h3 class="text-sm font-bold text-white mb-2" id="dialogTitle">Dialog Title</h3>
+            <p class="text-xs text-slate-400 mb-5 leading-relaxed" id="dialogMessage"></p>
+            <div class="flex justify-center space-x-3">
+                <button id="dialogBtnPrimary" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs px-4 py-2 rounded-lg font-semibold transition">OK</button>
+                <button id="dialogBtnSecondary" class="hidden bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs px-4 py-2 rounded-lg font-semibold transition">Cancel</button>
+            </div>
+        </div>
+    </div>
 
-        // Verified Immutable Credentials Block
-        const firebaseConfig = {
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js';
+        // v2.7.1 NEW: Imported GoogleAuthProvider and signInWithPopup
+        import { getAuth, signInAnonymously, onAuthStateChanged, signOut, signInWithEmailAndPassword, createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js';
+        import { getFirestore, doc, setDoc, collection, onSnapshot, deleteDoc } from 'https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js';
+
+        // CONFIGURED EXACTLY PER PRODUCTION SPECIFICATION DIRECTORY
+        const appId = 'lifesync-cloud-tracker'; 
+        
+        const NATIVE_FIREBASE_CONFIG = {
             apiKey: "AIzaSyCh_S19J81W9HZNs-BDY0Zb1EMXAJZpKHM",
             authDomain: "lifesync-tracker.firebaseapp.com",
             projectId: "lifesync-tracker",
             storageBucket: "lifesync-tracker.firebasestorage.app",
             messagingSenderId: "1010234160497",
-            appId: "1:1010234160497:web:c69cb8b9f996e7b85cf2d0",
-            measurementId: "G-EQHD4B1SDZ"
+            appId: "1:1010234160497:web:c69cb8b9f996e7b85cf2d0"
         };
-        const defaultAppId = 'lifesync-cloud-tracker';
 
-        // State Tracking variables
-        let db; let auth; let googleProvider;
-        let currentUser = null; let unsubscribeTasks = null; let allTasks = [];
-        let webhookData = { url: "", lastStatus: "None", lastTime: "--" };
-
-        try {
-            const app = initializeApp(firebaseConfig);
-            auth = getAuth(app);
-            db = getFirestore(app);
-            googleProvider = new GoogleAuthProvider();
-            console.log("Firebase Connection Active");
-        } catch(e) {
-            console.error("Initialization error:", e);
+        function getOffsetDateString(daysOffset) {
+            const date = new Date();
+            date.setDate(date.getDate() + daysOffset);
+            return date.toISOString().split('T')[0];
         }
 
-        // Authentication Handlers
-        window.handleGoogleLogin = async () => {
-            try {
-                // Trigger popup immediately without hiding errors first to satisfy browser intent restrictions
-                await signInWithPopup(auth, googleProvider);
-            } catch (error) {
-                console.error("Popup error:", error);
-                showError("Google Sign-In failed: " + error.message);
-            }
+        const DEFAULT_SEED_DATA = [
+            { id: "seed-1", name: "RCA Auto Insurance Renewal", category: "vehicle", expiryDate: getOffsetDateString(4), recurrence: "yearly", alertWindows: [30, 7, 1, 0], notes: "Review premiums.", lastCompleted: null, archived: false }
+        ];
+
+        let app, auth, db, googleProvider;
+        let items = [];
+        let profile = { webhook: "", webhookSecret: "", lastWebhookLog: null };
+        let currentFilter = 'all';
+        let isSignUpMode = false;
+        let activeFirestoreUnsubscribe = null;
+        let activeProfileUnsubscribe = null;
+
+        window.onload = function() { initLifecycle(); };
+
+        window.selectStorageMode = function(mode) {
+            localStorage.setItem('lifesync_storage_mode', mode);
+            const choiceScreen = document.getElementById('choiceScreen');
+            if (choiceScreen) choiceScreen.classList.add('hidden');
+            initLifecycle();
         };
 
-        window.handleEmailLogin = async () => {
-            const email = document.getElementById('emailInput').value;
-            const pass = document.getElementById('passwordInput').value;
-            hideError();
-            try {
-                try {
-                    await signInWithEmailAndPassword(auth, email, pass);
-                } catch (e) {
-                    if (e.code === 'auth/user-not-found' || e.code === 'auth/invalid-credential') {
-                        await createUserWithEmailAndPassword(auth, email, pass);
-                    } else { throw e; }
+        window.changeMindReturnToChoice = function() {
+            localStorage.removeItem('lifesync_storage_mode');
+            const authScreen = document.getElementById('authScreen');
+            if (authScreen) authScreen.classList.add('hidden');
+            initLifecycle();
+        };
+
+        async function initLifecycle() {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            if (!storageMode) {
+                const choiceScreen = document.getElementById('choiceScreen');
+                if (choiceScreen) {
+                    choiceScreen.classList.remove('hidden');
+                    choiceScreen.classList.add('flex');
                 }
-            } catch (error) { showError(error.message); }
-        };
-
-        window.handleGuestLogin = async () => {
-            hideError();
-            try { await signInAnonymously(auth); } 
-            catch (error) { showError(error.message); }
-        };
-
-        window.handleLogout = async () => {
-            if(unsubscribeTasks) unsubscribeTasks();
-            await signOut(auth);
-            allTasks = [];
-            document.getElementById('dashboardScreen').style.display = 'none';
-            document.getElementById('authScreen').style.display = 'flex';
-        };
-
-        function showError(msg) {
-            const el = document.getElementById('authError');
-            el.textContent = msg; el.classList.remove('hidden');
-        }
-        function hideError() { document.getElementById('authError').classList.add('hidden'); }
-
-        // Authentication State Synchronization Observer
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('authScreen').style.display = 'none';
-                document.getElementById('dashboardScreen').style.display = 'flex';
-                
-                document.getElementById('userEmailTag').textContent = `Logged in: ${user.isAnonymous ? 'Guest User' : (user.email || 'Google Account Connected')}`;
-                document.getElementById('syncBadge').className = user.isAnonymous 
-                    ? "text-[10px] bg-slate-500/20 text-slate-300 border border-slate-500/30 px-2 py-0.5 rounded-full font-normal" 
-                    : "text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal";
-                document.getElementById('syncBadge').textContent = user.isAnonymous ? "Local Only" : "Cloud Synced";
-
-                loadSettings();
-                listenToTasks();
-            } else {
-                currentUser = null;
-                document.getElementById('dashboardScreen').style.display = 'none';
-                document.getElementById('authScreen').style.display = 'flex';
+                return;
             }
-        });
-
-        // Pipeline Path Matching
-        function getCollectionRef() {
-            return collection(db, 'artifacts', defaultAppId, 'users', currentUser.uid, 'tasks');
+            if (storageMode === 'local') { setupLocalOfflineLifecycle(); return; }
+            if (storageMode === 'cloud') { setupCloudLifecycle(); }
         }
 
-        function listenToTasks() {
-            if (!currentUser) return;
-            if (unsubscribeTasks) unsubscribeTasks();
-
-            const ref = getCollectionRef();
-            unsubscribeTasks = onSnapshot(ref, (snapshot) => {
-                allTasks = [];
-                snapshot.forEach(doc => { allTasks.push({ id: doc.id, ...doc.data() }); });
-                renderTasks();
-                renderArchives();
-            }, (error) => { console.error("Snapshot synchronization break:", error); });
-        }
-
-        async function loadSettings() {
-            if(!currentUser || currentUser.isAnonymous) return;
-            try {
-                const ref = doc(db, 'artifacts', defaultAppId, 'users', currentUser.uid, 'settings', 'webhook');
-                const snap = await getDoc(ref);
-                if(snap.exists()) {
-                    webhookData = snap.data();
-                    document.getElementById('webhookUrl').value = webhookData.url || "";
-                    updateTelemetryUI();
-                }
-            } catch(e) { console.error("Settings load catch:", e); }
-        }
-
-        window.saveSettings = async () => {
-            const url = document.getElementById('webhookUrl').value.trim();
-            if(!currentUser || currentUser.isAnonymous) { alert("Settings require registration."); return; }
-            try {
-                const ref = doc(db, 'artifacts', defaultAppId, 'users', currentUser.uid, 'settings', 'webhook');
-                await setDoc(ref, { url: url, lastStatus: "Updated", lastTime: new Date().toLocaleString() }, {merge:true});
-                closeModal('settingsModal');
-                webhookData.url = url;
-            } catch(e) { console.error(e); }
-        };
-
-        function updateTelemetryUI() {
-            const statEl = document.getElementById('telemetryStatus');
-            statEl.textContent = webhookData.lastStatus || "Awaiting dispatch";
-            statEl.className = webhookData.lastStatus === "Success 200" ? "text-emerald-400" : "text-amber-400";
-            document.getElementById('telemetryTime').textContent = webhookData.lastTime || "--";
-        }
-
-        window.saveTask = async () => {
-            if (!currentUser) return;
-            const id = document.getElementById('taskId').value;
-            const name = document.getElementById('taskName').value.trim();
-            const date = document.getElementById('taskDate').value;
-            const category = document.getElementById('taskCategory').value;
-            const notes = document.getElementById('taskNotes').value.trim();
+        function setupLocalOfflineLifecycle() {
+            const dashboard = document.getElementById('mainDashboard');
+            if (dashboard) {
+                dashboard.classList.remove('hidden');
+                dashboard.classList.add('flex');
+            }
             
-            const errEl = document.getElementById('validationError');
-            if(name.length < 2) {
-                errEl.textContent = "Name must be at least 2 characters.";
-                errEl.classList.remove('hidden'); return;
+            const syncBadge = document.getElementById('syncBadge');
+            if (syncBadge) {
+                syncBadge.textContent = "Offline Local";
+                syncBadge.className = "text-[10px] bg-slate-800 text-slate-400 border border-slate-700 px-2 py-0.5 rounded-full font-normal";
             }
-            if(!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-                errEl.textContent = "Date structural mismatch (YYYY-MM-DD template required).";
-                errEl.classList.remove('hidden'); return;
+            
+            const userEmailTag = document.getElementById('userEmailTag');
+            if (userEmailTag) {
+                userEmailTag.innerHTML = `📍 Local Offline Storage (<button onclick="switchToCloudMode()" class="text-indigo-400 hover:underline font-semibold">Connect Cloud Sync</button>)`;
             }
-            errEl.classList.add('hidden');
 
-            const payload = { name, date, category, notes, archived: false, updatedAt: new Date().toISOString() };
+            const cloudStatusBadge = document.getElementById('cloudStatusBadge');
+            if (cloudStatusBadge) {
+                cloudStatusBadge.textContent = "Offline Storage";
+                cloudStatusBadge.className = "text-[10px] bg-slate-800 text-slate-400 px-2 py-0.5 rounded border border-slate-700";
+            }
+
+            const cloudStatusTag = document.getElementById('cloudStatusTag');
+            if (cloudStatusTag) {
+                cloudStatusTag.textContent = "Status: Cache memory driver active";
+            }
+            
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) logoutBtn.classList.add('hidden');
+            
+            const localUpgradeBanner = document.getElementById('localUpgradeBanner');
+            if (localUpgradeBanner) localUpgradeBanner.classList.remove('hidden');
+            
+            const cloudDisconnectBanner = document.getElementById('cloudDisconnectBanner');
+            if (cloudDisconnectBanner) cloudDisconnectBanner.classList.add('hidden');
+
+            const diagnosticUid = document.getElementById('diagnosticUid');
+            if (diagnosticUid) diagnosticUid.textContent = "Offline Mode (No UID)";
+
+            const simulatedEmail = localStorage.getItem('lifesync_simulated_email') || "local-user@device.local";
+            const emailInput = document.getElementById('emailInput');
+            if (emailInput) {
+                emailInput.value = simulatedEmail;
+                emailInput.readOnly = false;
+            }
+
+            const storedLocalItems = localStorage.getItem('lifesync_local_items');
+            if (storedLocalItems) {
+                try { items = JSON.parse(storedLocalItems); } catch(e) { items = [...DEFAULT_SEED_DATA]; }
+            } else {
+                items = [...DEFAULT_SEED_DATA];
+                localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+            }
+
+            const localWebhook = localStorage.getItem('lifesync_local_webhook') || "";
+            const localSecret = localStorage.getItem('lifesync_local_secret') || "";
+            const rawLog = localStorage.getItem('lifesync_local_webhook_log');
+            let localLog = null;
+            if (rawLog) { try { localLog = JSON.parse(rawLog); } catch(e){} }
+            profile = { webhook: localWebhook, webhookSecret: localSecret, lastWebhookLog: localLog };
+            
+            const webhookInput = document.getElementById('webhookInput');
+            if (webhookInput) webhookInput.value = profile.webhook;
+            
+            const webhookSecretInput = document.getElementById('webhookSecretInput');
+            if (webhookSecretInput) webhookSecretInput.value = profile.webhookSecret;
+
+            renderWebhookLogUI();
+            renderDashboardUI();
+            
+            const archiveModal = document.getElementById('archiveModal');
+            if (archiveModal && !archiveModal.classList.contains('hidden')) renderArchiveUI();
+            runAutomatedDailyCheck();
+        }
+
+        async function setupCloudLifecycle() {
+            const localUpgradeBanner = document.getElementById('localUpgradeBanner');
+            if (localUpgradeBanner) localUpgradeBanner.classList.add('hidden');
+            
+            const cloudDisconnectBanner = document.getElementById('cloudDisconnectBanner');
+            if (cloudDisconnectBanner) cloudDisconnectBanner.classList.remove('hidden');
+            
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) logoutBtn.classList.remove('hidden');
 
             try {
-                if (id) { await updateDoc(doc(getCollectionRef(), id), payload); } 
-                else {
-                    payload.createdAt = new Date().toISOString();
-                    await addDoc(getCollectionRef(), payload);
+                app = initializeApp(NATIVE_FIREBASE_CONFIG);
+                auth = getAuth(app);
+                db = getFirestore(app);
+                googleProvider = new GoogleAuthProvider(); // v2.7.1 NEW
+                setupAuthenticationListener();
+            } catch (err) {
+                showDialog("Initialization Failure", "Could not connect to automated cloud network pools.", "error");
+            }
+        }
+
+        async function setupAuthenticationListener() {
+            onAuthStateChanged(auth, async (user) => {
+                if (user) {
+                    const authScreen = document.getElementById('authScreen');
+                    if (authScreen) authScreen.classList.add('hidden');
+                    
+                    const dashboard = document.getElementById('mainDashboard');
+                    if (dashboard) {
+                        dashboard.classList.remove('hidden');
+                        dashboard.classList.add('flex');
+                    }
+                    
+                    const syncBadge = document.getElementById('syncBadge');
+                    if (syncBadge) {
+                        syncBadge.textContent = "Cloud Synced";
+                        syncBadge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-normal";
+                    }
+
+                    const userEmailTag = document.getElementById('userEmailTag');
+                    if (userEmailTag) {
+                        userEmailTag.textContent = user.isAnonymous ? "Anonymous Guest Sync" : `Logged in: ${user.email || 'Google Account'}`;
+                    }
+
+                    const emailInput = document.getElementById('emailInput');
+                    if (emailInput) {
+                        emailInput.value = user.isAnonymous ? "guest-mode@domain.com" : user.email;
+                        emailInput.readOnly = true;
+                    }
+
+                    // v2.7.1 NEW: Inject active UID into settings diagnostic panel
+                    const diagnosticUid = document.getElementById('diagnosticUid');
+                    if (diagnosticUid) {
+                        diagnosticUid.textContent = user.uid;
+                    }
+
+                    bindRealtimeFirestoreCollections(user.uid);
+                    checkAndPromptLocalToCloudMigration(user.uid);
+                } else {
+                    if (activeFirestoreUnsubscribe) activeFirestoreUnsubscribe();
+                    if (activeProfileUnsubscribe) activeProfileUnsubscribe();
+
+                    const dashboard = document.getElementById('mainDashboard');
+                    if (dashboard) dashboard.classList.add('hidden');
+                    
+                    const authScreen = document.getElementById('authScreen');
+                    if (authScreen) authScreen.classList.remove('hidden');
+                    
+                    updateAuthPanelUI();
                 }
-                closeModal('taskModal');
-            } catch (e) { console.error("Save failure logs:", e); }
-        };
+            });
+        }
 
-        window.deleteTask = async (id) => {
-            if(!currentUser) return;
-            if(confirm("Permanently drop this log item?")) {
-                try { await deleteDoc(doc(getCollectionRef(), id)); } catch(e) { console.error(e); }
+        function updateAuthPanelUI() {
+            const title = document.getElementById('authScreenTitle');
+            const desc = document.getElementById('authScreenDesc');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const toggleBtn = document.getElementById('authToggleBtn');
+
+            if (!title || !desc || !submitBtn || !toggleBtn) return;
+
+            if (isSignUpMode) {
+                title.textContent = "Create TaskLapse Account";
+                desc.textContent = "Register below to initiate automated background cloud updates";
+                submitBtn.textContent = "Sign Up";
+                toggleBtn.textContent = "Already have an account? Sign In";
+            } else {
+                title.textContent = "Secure TaskLapse Login";
+                desc.textContent = "Access real-time synced items";
+                submitBtn.textContent = "Sign In";
+                toggleBtn.textContent = "Need to Create Account?";
             }
-        };
-
-        window.archiveTask = async (id) => {
-            if(!currentUser) return;
-            try { await updateDoc(doc(getCollectionRef(), id), { archived: true, archivedAt: new Date().toISOString() }); } 
-            catch(e) { console.error(e); }
-        };
-
-        window.unarchiveTask = async (id) => {
-            if(!currentUser) return;
-            try { await updateDoc(doc(getCollectionRef(), id), { archived: false }); } catch(e) { console.error(e); }
-        };
-
-        window.editTask = (id) => {
-            const task = allTasks.find(t => t.id === id);
-            if(!task) return;
-            document.getElementById('taskId').value = task.id;
-            document.getElementById('taskName').value = task.name;
-            document.getElementById('taskDate').value = task.date;
-            document.getElementById('taskCategory').value = task.category || 'Personal';
-            document.getElementById('taskNotes').value = task.notes || '';
-            document.getElementById('validationError').classList.add('hidden');
-            document.getElementById('modalTitle').textContent = "Edit Tracked Item";
-            openModal('taskModal');
-        };
-
-        function calculateDaysLeft(dateString) {
-            const due = new Date(dateString); const now = new Date();
-            due.setHours(0,0,0,0); now.setHours(0,0,0,0);
-            return Math.ceil((due - now) / (1000 * 60 * 60 * 24));
         }
 
-        function getCategoryColor(cat) {
-            const map = {
-                'Personal': 'bg-blue-500/20 text-blue-300 border-blue-500/30',
-                'Household': 'bg-orange-500/20 text-orange-300 border-orange-500/30',
-                'Health': 'bg-rose-500/20 text-rose-300 border-rose-500/30',
-                'Auto': 'bg-slate-500/20 text-slate-300 border-slate-500/30',
-                'Subscriptions': 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
-                'Work': 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-            };
-            return map[cat] || map['Personal'];
-        }
+        function bindRealtimeFirestoreCollections(userId) {
+            const itemsCollectionRef = collection(db, 'artifacts', appId, 'users', userId, 'items');
+            const profileDocRef = doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile');
 
-        function createTaskHTML(task, daysLeft) {
-            let urgencyClass = 'bg-slate-800 border-slate-700'; let textClass = 'text-slate-300';
-            if (daysLeft < 0) {
-                urgencyClass = 'bg-red-900/30 border-red-500/50'; textClass = 'text-red-400 font-bold';
-                daysLeft = `Expired (${Math.abs(daysLeft)}d ago)`;
-            } else if (daysLeft <= 14) {
-                urgencyClass = 'bg-rose-900/20 border-rose-500/30'; textClass = 'text-rose-400';
-                daysLeft = `${daysLeft}d left`;
-            } else if (daysLeft <= 45) { textClass = 'text-amber-400'; daysLeft = `${daysLeft}d left`; } 
-            else { textClass = 'text-emerald-400'; daysLeft = `${daysLeft}d left`; }
-
-            return `
-                <div class="${urgencyClass} border rounded-xl p-4 transition-all hover:border-slate-500 group relative">
-                    <div class="flex justify-between items-start mb-2">
-                        <span class="text-[10px] px-2 py-0.5 rounded border ${getCategoryColor(task.category)} font-medium">${task.category || 'Personal'}</span>
-                        <span class="text-xs ${textClass} bg-slate-900/50 px-2 py-1 rounded">${daysLeft}</span>
-                    </div>
-                    <h4 class="font-bold text-white mb-1 truncate" title="${task.name}">${task.name}</h4>
-                    <p class="text-xs text-slate-400 line-clamp-2 mb-3 h-8">${task.notes || '<i class="text-slate-600">No notes</i>'}</p>
-                    <div class="flex gap-2 justify-end opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                        <button onclick="editTask('${task.id}')" class="text-xs px-3 py-1.5 bg-slate-700 hover:bg-slate-600 text-white rounded">Edit</button>
-                        <button onclick="archiveTask('${task.id}')" class="text-xs px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded">Check Off</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        window.renderTasks = () => {
-            const searchTerm = document.getElementById('globalSearch').value.toLowerCase();
-            let active = allTasks.filter(t => !t.archived);
-            if(searchTerm) {
-                active = active.filter(t => t.name.toLowerCase().includes(searchTerm) || (t.notes && t.notes.toLowerCase().includes(searchTerm)));
+            const cloudStatusBadge = document.getElementById('cloudStatusBadge');
+            if (cloudStatusBadge) {
+                cloudStatusBadge.textContent = "Cloud Active";
+                cloudStatusBadge.className = "text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30";
             }
 
-            active.sort((a, b) => new Date(a.date) - new Date(b.date));
-            const days = []; const weeks = []; const months = [];
-            let cDays=0, cWeeks=0, cMonths=0;
+            const cloudStatusTag = document.getElementById('cloudStatusTag');
+            if (cloudStatusTag) {
+                cloudStatusTag.textContent = "Status: Firestore live synchronization active";
+            }
 
-            active.forEach(t => {
-                const dl = calculateDaysLeft(t.date);
-                if (dl <= 14) { days.push(t); cDays++; }
-                else if (dl <= 45) { weeks.push(t); cWeeks++; }
-                else { months.push(t); cMonths++; }
+            activeFirestoreUnsubscribe = onSnapshot(itemsCollectionRef, (snapshot) => {
+                items = [];
+                snapshot.forEach((doc) => { items.push({ id: doc.id, ...doc.data() }); });
+                
+                renderDashboardUI();
+                
+                const archiveModal = document.getElementById('archiveModal');
+                if (archiveModal && !archiveModal.classList.contains('hidden')) renderArchiveUI();
+                
+                runAutomatedDailyCheck();
             });
 
-            document.getElementById('statTotal').textContent = active.length;
-            document.getElementById('statDays').textContent = cDays;
-            document.getElementById('statWeeks').textContent = cWeeks;
-            document.getElementById('statMonths').textContent = cMonths;
-            document.getElementById('countDays').textContent = `${cDays} Items`;
-            document.getElementById('countWeeks').textContent = `${cWeeks} Items`;
-            document.getElementById('countMonths').textContent = `${cMonths} Items`;
+            activeProfileUnsubscribe = onSnapshot(profileDocRef, (docSnap) => {
+                if (docSnap.exists()) { 
+                    profile = docSnap.data(); 
+                } else { 
+                    profile = { webhook: "", webhookSecret: "", lastWebhookLog: null }; 
+                }
+                
+                const webhookInput = document.getElementById('webhookInput');
+                if (webhookInput) webhookInput.value = profile.webhook || "";
+                
+                const webhookSecretInput = document.getElementById('webhookSecretInput');
+                if (webhookSecretInput) webhookSecretInput.value = profile.webhookSecret || "";
 
-            document.getElementById('colDays').innerHTML = days.map(t => createTaskHTML(t, calculateDaysLeft(t.date))).join('');
-            document.getElementById('colWeeks').innerHTML = weeks.map(t => createTaskHTML(t, calculateDaysLeft(t.date))).join('');
-            document.getElementById('colMonths').innerHTML = months.map(t => createTaskHTML(t, calculateDaysLeft(t.date))).join('');
-        };
-
-        window.renderArchives = () => {
-            const searchTerm = document.getElementById('archiveSearch').value.toLowerCase();
-            const catFilter = document.getElementById('archiveFilterCat').value;
-            let archived = allTasks.filter(t => t.archived);
-            if(searchTerm) archived = archived.filter(t => t.name.toLowerCase().includes(searchTerm));
-            if(catFilter !== 'All') archived = archived.filter(t => t.category === catFilter);
-            
-            archived.sort((a,b) => (b.archivedAt ? new Date(b.archivedAt) : new Date(b.date)) - (a.archivedAt ? new Date(a.archivedAt) : new Date(a.date)));
-
-            document.getElementById('archiveList').innerHTML = archived.map(t => `
-                <div class="bg-slate-800/50 border border-slate-700 p-3 rounded-lg flex justify-between items-center hover:bg-slate-800 transition-colors">
-                    <div>
-                        <h4 class="text-white font-medium line-through text-slate-400">${t.name}</h4>
-                        <div class="flex gap-2 text-xs mt-1">
-                            <span class="text-slate-500">Due: ${t.date}</span>
-                            <span class="text-slate-600">&bull;</span>
-                            <span class="text-indigo-400">${t.category || 'N/A'}</span>
-                        </div>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="unarchiveTask('${t.id}')" class="p-2 bg-slate-700 text-white rounded"><i class="ph ph-arrow-counter-clockwise"></i></button>
-                        <button onclick="deleteTask('${t.id}')" class="p-2 bg-slate-700 text-white rounded"><i class="ph ph-trash"></i></button>
-                    </div>
-                </div>
-            `).join('') || '<div class="text-center text-slate-500 py-8">No completed items found.</div>';
+                renderWebhookLogUI();
+            });
         }
 
-        // Window level structural hooks
-        window.openModal = (id) => {
-            if(id === 'taskModal') {
-                document.getElementById('taskForm').reset();
-                document.getElementById('taskId').value = '';
-                document.getElementById('modalTitle').textContent = "Track New Item";
-                document.getElementById('validationError').classList.add('hidden');
+        function renderWebhookLogUI() {
+            const logSection = document.getElementById('webhookLogSection');
+            const statusPill = document.getElementById('webhookStatusPill');
+            const logAction = document.getElementById('webhookLogAction');
+            const logTime = document.getElementById('webhookLogTime');
+
+            if (!logSection || !statusPill || !logAction || !logTime) return;
+
+            if (!profile || !profile.lastWebhookLog) {
+                logSection.classList.add('hidden');
+                return;
             }
-            document.getElementById(id).classList.remove('hidden');
+
+            logSection.classList.remove('hidden');
+            const logData = profile.lastWebhookLog;
+
+            if (logData.status === 'success') {
+                statusPill.textContent = `SUCCESS (${logData.statusCode || 200})`;
+                statusPill.className = "text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30";
+            } else {
+                statusPill.textContent = `FAILURE (${logData.statusCode || 'ERR'})`;
+                statusPill.className = "text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30";
+            }
+
+            logAction.textContent = `Trigger: ${logData.payloadType || 'expiration_alert'}`;
+            try {
+                const dateObj = new Date(logData.timestamp);
+                logTime.textContent = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            } catch(e) {
+                logTime.textContent = logData.timestamp || "Unknown";
+            }
+        }
+
+        function checkAndPromptLocalToCloudMigration(userId) {
+            const localItemsStr = localStorage.getItem('lifesync_local_items');
+            if (localItemsStr) {
+                try {
+                    const localItems = JSON.parse(localItemsStr);
+                    if (localItems && localItems.length > 0) {
+                        showDialogConfirm("Migrate Offline Data?", `Sync ${localItems.length} local items to your new cloud account database?`, async () => {
+                            for (const item of localItems) {
+                                const docRef = doc(db, 'artifacts', appId, 'users', userId, 'items', item.id);
+                                await setDoc(docRef, item);
+                            }
+                            localStorage.removeItem('lifesync_local_items');
+                            showDialog("Migration Complete!", "Items fully synchronized to your cloud workspace.", "success");
+                        });
+                    }
+                } catch(e) { console.warn(e); }
+            }
+        }
+
+        window.renderDashboardUI = function() {
+            const colDays = document.getElementById('colDays');
+            const colWeeks = document.getElementById('colWeeks');
+            const colMonths = document.getElementById('colMonths');
+            
+            if (!colDays || !colWeeks || !colMonths) return;
+
+            colDays.innerHTML = ''; colWeeks.innerHTML = ''; colMonths.innerHTML = '';
+
+            let counterDays = 0, counterWeeks = 0, counterMonths = 0;
+            
+            const searchInput = document.getElementById('dashboardSearchInput');
+            const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+            
+            const filteredItems = items.filter(item => {
+                if (item.archived) return false;
+                const matchesCategory = currentFilter === 'all' || item.category === currentFilter;
+                const matchesSearch = !searchTerm || (item.name || '').toLowerCase().includes(searchTerm) || (item.notes || '').toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            });
+
+            // Ensure chronological order for filtered output
+            filteredItems.sort((a, b) => new Date(a.expiryDate) - new Date(b.expiryDate));
+
+            filteredItems.forEach(item => {
+                const daysLeft = calculateDaysRemaining(item.expiryDate);
+                const card = createItemCard(item, daysLeft);
+
+                if (daysLeft <= 7) { colDays.appendChild(card); counterDays++; } 
+                else if (daysLeft > 7 && daysLeft <= 30) { colWeeks.appendChild(card); counterWeeks++; } 
+                else { colMonths.appendChild(card); counterMonths++; }
+            });
+
+            if (counterDays === 0) renderEmptyColumnState(colDays, "Days");
+            if (counterWeeks === 0) renderEmptyColumnState(colWeeks, "Weeks");
+            if (counterMonths === 0) renderEmptyColumnState(colMonths, "Months");
+
+            const countDaysObj = document.getElementById('countDays');
+            if(countDaysObj) countDaysObj.textContent = `${counterDays} Items`;
+            
+            const countWeeksObj = document.getElementById('countWeeks');
+            if(countWeeksObj) countWeeksObj.textContent = `${counterWeeks} Items`;
+            
+            const countMonthsObj = document.getElementById('countMonths');
+            if(countMonthsObj) countMonthsObj.textContent = `${counterMonths} Items`;
+
+            const statTotalObj = document.getElementById('statTotal');
+            if(statTotalObj) statTotalObj.textContent = filteredItems.length;
+            
+            const statDaysObj = document.getElementById('statDays');
+            if(statDaysObj) statDaysObj.textContent = counterDays;
+            
+            const statWeeksObj = document.getElementById('statWeeks');
+            if(statWeeksObj) statWeeksObj.textContent = counterWeeks;
+            
+            const statMonthsObj = document.getElementById('statMonths');
+            if(statMonthsObj) statMonthsObj.textContent = counterMonths;
+        }
+
+        window.openArchiveModal = function() {
+            const searchIn = document.getElementById('archiveSearchInput');
+            const filterSel = document.getElementById('archiveCategoryFilter');
+            if (searchIn) searchIn.value = '';
+            if (filterSel) filterSel.value = 'all';
+            
+            renderArchiveUI();
+            openModal('archiveModal');
         };
-        window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
-        window.openArchive = () => { renderArchives(); openModal('archiveModal'); };
-        window.openSettings = () => { 
-            loadSettings(); 
-            updateTelemetryUI(); 
-            // UPDATED: Inject the active UID into the settings panel
-            document.getElementById('diagnosticUid').textContent = currentUser ? currentUser.uid : 'Unknown';
-            openModal('settingsModal'); 
+
+        window.renderArchiveUI = function() {
+            const archiveList = document.getElementById('archiveList');
+            if (!archiveList) return;
+            archiveList.innerHTML = '';
+            
+            const searchTerm = (document.getElementById('archiveSearchInput')?.value || '').toLowerCase().trim();
+            const categoryFilter = document.getElementById('archiveCategoryFilter')?.value || 'all';
+
+            // Client side filter pipeline across reactive items data collection array
+            const archivedItems = items.filter(i => {
+                if (!i.archived) return false;
+                const matchesCategory = (categoryFilter === 'all' || i.category === categoryFilter);
+                const matchesSearch = !searchTerm || (i.name || '').toLowerCase().includes(searchTerm) || (i.notes || '').toLowerCase().includes(searchTerm);
+                return matchesCategory && matchesSearch;
+            }).sort((a, b) => new Date(b.archivedDate || 0) - new Date(a.archivedDate || 0));
+
+            if (archivedItems.length === 0) {
+                archiveList.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 py-12"><p class="text-xs font-semibold text-slate-500">No matching archived data records matched.</p></div>`;
+                return;
+            }
+
+            archivedItems.forEach(item => {
+                archiveList.appendChild(createArchiveCard(item));
+            });
+        }
+
+        function createArchiveCard(item) {
+            const card = document.createElement('div');
+            const cat = getCategoryDetails(item.category);
+            const completedDate = item.archivedDate || item.lastCompleted || "Unknown";
+
+            card.className = `bg-slate-950 border border-slate-800 rounded-xl p-4 flex justify-between items-center mb-3`;
+            card.innerHTML = `
+                <div class="pr-4">
+                    <div class="flex items-center gap-2 mb-1">
+                        <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-medium border ${cat.bg}">${cat.emoji} ${cat.label}</span>
+                        <span class="text-[10px] text-slate-500 font-mono">Original Expiry: ${item.expiryDate}</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-300 line-through decoration-slate-600">${escapeHtml(item.name)}</h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(item.notes) || '<span class="italic">No notes</span>'}</p>
+                </div>
+                <div class="flex flex-col items-end gap-2 shrink-0">
+                    <span class="text-[10px] bg-slate-800 text-slate-400 px-2 py-1 rounded border border-slate-700 font-mono">Archived: ${completedDate}</span>
+                    <button onclick="confirmArchiveDelete('${item.id}')" class="text-[10px] text-rose-400/80 hover:text-rose-400 hover:bg-rose-500/10 px-2 py-1 rounded transition border border-transparent hover:border-rose-500/20">Delete Record</button>
+                </div>
+            `;
+            return card;
+        }
+
+        function renderEmptyColumnState(columnElement, title) {
+            columnElement.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-6 border-2 border-dashed border-slate-850 rounded-xl py-12"><p class="text-xs font-semibold text-slate-500">No items due</p></div>`;
+        }
+
+        function calculateDaysRemaining(dateString) {
+            const today = new Date();
+            const todayUTC = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate());
+            const parts = dateString.split('-');
+            const targetUTC = Date.UTC(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+            return Math.floor((targetUTC - todayUTC) / (1000 * 60 * 60 * 24));
+        }
+
+        function getCategoryDetails(category) {
+            switch(category) {
+                case 'me': return { label: 'My Health', bg: 'bg-teal-500/10 border-teal-500/20 text-teal-400', emoji: '👤' };
+                case 'dog': return { label: "Dog's Medical", bg: 'bg-purple-500/10 border-purple-500/20 text-purple-400', emoji: '🐾' };
+                case 'vehicle': return { label: 'Auto / Moto', bg: 'bg-blue-500/10 border-blue-500/20 text-blue-400', emoji: '🚗' };
+                case 'subscription': return { label: 'Subscription', bg: 'bg-indigo-500/10 border-indigo-500/20 text-indigo-400', emoji: '💳' };
+                default: return { label: 'Household', bg: 'bg-slate-500/10 border-slate-500/20 text-slate-400', emoji: '🏠' };
+            }
+        }
+
+        function createItemCard(item, daysRemaining) {
+            const card = document.createElement('div');
+            const cat = getCategoryDetails(item.category);
+            let statusBadgeClass = '', statusText = '', ringColor = '';
+
+            if (daysRemaining < 0) {
+                statusBadgeClass = 'bg-rose-500/20 border-rose-500/30 text-rose-400';
+                statusText = `Expired ${Math.abs(daysRemaining)}d ago`;
+                ringColor = 'border-rose-500/50';
+            } else if (daysRemaining === 0) {
+                statusBadgeClass = 'bg-rose-500 text-slate-950 font-bold animate-pulse';
+                statusText = 'Due Today!';
+                ringColor = 'border-rose-500';
+            } else {
+                statusBadgeClass = 'bg-emerald-500/20 border-emerald-500/30 text-emerald-400';
+                statusText = `${daysRemaining}d left`;
+                ringColor = 'border-slate-800';
+            }
+
+            card.className = `group bg-slate-900/60 border ${ringColor} rounded-xl p-4 hover:bg-slate-900 hover:border-slate-700 transition duration-200 relative overflow-hidden`;
+            card.innerHTML = `
+                <div class="flex items-center justify-between mb-2">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium border ${cat.bg}">${cat.emoji} ${cat.label}</span>
+                    <span class="px-2 py-0.5 rounded text-[10px] font-semibold border ${statusBadgeClass}">${statusText}</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-bold text-white truncate group-hover:text-indigo-400 transition">${escapeHtml(item.name)}</h3>
+                    <p class="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">${escapeHtml(item.notes) || '<span class="text-slate-600 italic">No notes</span>'}</p>
+                </div>
+                <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-end space-x-2">
+                    <button id="btn-edit-${item.id}" class="text-xs text-slate-400 hover:text-white hover:bg-slate-800 px-2.5 py-1 rounded border border-slate-800 transition">Edit</button>
+                    <button id="btn-del-${item.id}" class="text-xs text-rose-400/80 hover:text-rose-400 hover:bg-rose-500/10 px-2.5 py-1 rounded border border-slate-800 transition">Delete</button>
+                    <button id="btn-done-${item.id}" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-3 py-1 rounded transition">Check Off</button>
+                </div>
+            `;
+            card.querySelector(`#btn-edit-${item.id}`).onclick = () => editItem(item.id);
+            card.querySelector(`#btn-del-${item.id}`).onclick = () => confirmItemDelete(item.id);
+            card.querySelector(`#btn-done-${item.id}`).onclick = () => completeOrRenewItem(item.id);
+            return card;
+        }
+
+        function runAutomatedDailyCheck() {
+            if (!items || items.length === 0) return;
+            const todayString = new Date().toISOString().split('T')[0];
+            const lastAutoCheck = localStorage.getItem('tasklapse_last_check_date');
+            
+            if (lastAutoCheck !== todayString) {
+                setTimeout(() => {
+                    window.triggerDailyNotificationCheck(true); 
+                    localStorage.setItem('tasklapse_last_check_date', todayString);
+                }, 2000); 
+            }
+        }
+
+        window.triggerDailyNotificationCheck = function(isSilentMode = false) {
+            const emailOutbox = document.getElementById('emailOutbox');
+            if (!emailOutbox) return;
+            let matchedAlerts = [];
+
+            items.forEach(item => {
+                if (item.archived) return; 
+                const daysLeft = calculateDaysRemaining(item.expiryDate);
+                if (item.alertWindows && item.alertWindows.includes(daysLeft)) {
+                    matchedAlerts.push({ item: item, daysLeft: daysLeft });
+                }
+            });
+
+            if (matchedAlerts.length === 0) {
+                if (!isSilentMode) showDialog("Alarm System Check", "All active items are in healthy condition. No notification webhooks triggered today.", "info");
+                return;
+            }
+
+            const emptyMsg = document.getElementById('emptyOutboxMessage');
+            if (emptyMsg) emptyMsg.style.display = 'none';
+
+            matchedAlerts.forEach(match => {
+                const emailLog = createEmailLogDOM(match.item, match.daysLeft);
+                emailOutbox.insertBefore(emailLog, emailOutbox.firstChild);
+                if (profile.webhook) triggerExternalWebhookAPI(match.item, match.daysLeft);
+            });
+
+            if (!isSilentMode) showDialog("Alarms Checked", `Dispatched ${matchedAlerts.length} notification webhooks successfully.`, "success");
         };
+
+        function createEmailLogDOM(item, daysLeft) {
+            const mail = document.createElement('div');
+            const relativeHeadingPhrase = daysLeft === 0 ? "expires TODAY!" : `due in ${daysLeft} days!`;
+            const recipient = localStorage.getItem('lifesync_storage_mode') === 'cloud' ? auth.currentUser?.email : "local-user@device.local";
+
+            mail.className = "bg-slate-950 border border-slate-850 rounded-xl p-4 text-xs space-y-2";
+            mail.innerHTML = `
+                <div class="border-b border-slate-800 pb-2 flex justify-between"><span class="font-bold text-indigo-400 font-mono">SMTP MAIL GATEWAY</span></div>
+                <div class="space-y-1 text-slate-300">
+                    <div><strong>To:</strong> ${recipient}</div>
+                    <div><strong>Subject:</strong> 🚨 TaskLapse Alert: "${escapeHtml(item.name)}" ${relativeHeadingPhrase}</div>
+                </div>
+            `;
+            return mail;
+        }
+
+        async function triggerExternalWebhookAPI(item, daysLeft) {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            const payload = { 
+                event: "expiration_alert", item: item.name, daysRemaining: daysLeft, expiryDate: item.expiryDate, 
+                notes: item.notes || "", category: item.category, driverMode: storageMode,
+                user: storageMode === 'cloud' ? (auth.currentUser?.email || "anonymous") : "local-user",
+                auth_secret: profile.webhookSecret || ""
+            };
+            
+            try { 
+                const res = await fetch(profile.webhook, { 
+                    method: 'POST', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(payload) 
+                }); 
+                
+                const logEntry = {
+                    timestamp: new Date().toISOString(),
+                    status: res.ok ? "success" : "failure",
+                    statusCode: res.status,
+                    payloadType: "expiration_alert"
+                };
+
+                profile.lastWebhookLog = logEntry;
+                if (storageMode === 'local') {
+                    localStorage.setItem('lifesync_local_webhook_log', JSON.stringify(logEntry));
+                } else {
+                    const userId = auth.currentUser?.uid;
+                    if (userId) {
+                        await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile'), { 
+                            webhook: profile.webhook, 
+                            webhookSecret: profile.webhookSecret,
+                            lastWebhookLog: logEntry
+                        }, { merge: true });
+                    }
+                }
+                renderWebhookLogUI();
+            } 
+            catch (err) { 
+                console.error(err); 
+                const failEntry = { timestamp: new Date().toISOString(), status: "failure", statusCode: 0, payloadType: "expiration_alert" };
+                profile.lastWebhookLog = failEntry;
+                renderWebhookLogUI();
+            }
+        }
+
+        window.clearOutbox = function() {
+            const emailOutbox = document.getElementById('emailOutbox');
+            if(emailOutbox) {
+                emailOutbox.innerHTML = `<div class="h-full flex flex-col items-center justify-center text-center p-4" id="emptyOutboxMessage"><p class="text-xs font-semibold text-slate-500">No email alerts triggered today.</p></div>`;
+            }
+        };
+
+        // v2.7.1 NEW: Google Auth Logic Binding
+        window.handleGoogleLogin = async function() {
+            try {
+                await signInWithPopup(auth, googleProvider);
+            } catch (err) {
+                console.error("Popup error:", err);
+                showDialog("Google Sign-In Failed", err.message, "error");
+            }
+        };
+
+        window.handleFormSubmit = async function(event) {
+            event.preventDefault();
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            
+            const itemIdObj = document.getElementById('itemId');
+            const itemNameObj = document.getElementById('itemName');
+            const itemCategoryObj = document.getElementById('itemCategory');
+            const itemExpiryDateObj = document.getElementById('itemExpiryDate');
+            const itemRecurrenceObj = document.getElementById('itemRecurrence');
+            const itemNotesObj = document.getElementById('itemNotes');
+            
+            if(!itemIdObj || !itemNameObj || !itemCategoryObj || !itemExpiryDateObj || !itemRecurrenceObj || !itemNotesObj) return;
+
+            // Strict Validation Schema Assertions
+            const rawDate = itemExpiryDateObj.value;
+            const isoDatePattern = /^\d{4}-\d{2}-\d{2}$/;
+            if (!rawDate || !isoDatePattern.test(rawDate)) { 
+                showDialog("Validation Failed", "Target deadline must adhere strictly to a secure YYYY-MM-DD execution string standard format.", "error"); 
+                return; 
+            }
+
+            const cleanName = itemNameObj.value.trim();
+            if (cleanName.length < 2) {
+                showDialog("Validation Failed", "Trackable object entity names must span at least two alphanumeric characters.", "error");
+                return;
+            }
+
+            const id = itemIdObj.value || 'item-' + Date.now();
+            const name = cleanName;
+            const category = itemCategoryObj.value;
+            const expiryDate = rawDate;
+            const recurrence = itemRecurrenceObj.value;
+            const notes = itemNotesObj.value;
+            
+            const alertWindows = [];
+            const alert30 = document.getElementById('alert30');
+            if (alert30 && alert30.checked) alertWindows.push(30);
+            
+            const alert7 = document.getElementById('alert7');
+            if (alert7 && alert7.checked) alertWindows.push(7);
+            
+            const alertFinal = document.getElementById('alertFinal');
+            if (alertFinal && alertFinal.checked) {
+                alertWindows.push(1);
+                alertWindows.push(0);
+            }
+
+            // Standardize structured model configuration map objects
+            const payload = { 
+                id: String(id), 
+                name: String(name), 
+                category: String(category), 
+                expiryDate: String(expiryDate), 
+                recurrence: String(recurrence), 
+                notes: String(notes), 
+                alertWindows: alertWindows, 
+                lastCompleted: null, 
+                archived: false 
+            };
+
+            if (storageMode === 'local') {
+                const index = items.findIndex(i => i.id === id);
+                if (index !== -1) {
+                    payload.archived = items[index].archived || false;
+                    items[index] = payload; 
+                } else { items.push(payload); }
+                localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                closeModal('addItemModal'); renderDashboardUI();
+            } else {
+                const userId = auth.currentUser?.uid;
+                if (!userId) return;
+                try {
+                    await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', id), payload, { merge: true });
+                    closeModal('addItemModal');
+                } catch(e) { showDialog("Sync Error", "Failed to update cloud documents securely.", "error"); }
+            }
+        };
+
+        async function completeOrRenewItem(itemId) {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            const todayStr = new Date().toISOString().split('T')[0];
+
+            if (item.recurrence === 'none') {
+                showDialogConfirm("Finish Tracking Item?", `Mark once-off document "${item.name}" as completed and move to Archive?`, async () => {
+                    const updatedItem = { ...item, archived: true, archivedDate: todayStr };
+                    if (storageMode === 'local') {
+                        const idx = items.findIndex(i => i.id === itemId);
+                        items[idx] = updatedItem;
+                        localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                        renderDashboardUI();
+                    } else {
+                        const userId = auth.currentUser?.uid;
+                        await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', itemId), updatedItem);
+                    }
+                });
+            } else {
+                const currentExpiry = new Date(item.expiryDate);
+                let nextExpiry = new Date(currentExpiry);
+                if (item.recurrence === 'weekly') nextExpiry.setDate(currentExpiry.getDate() + 7);
+                else if (item.recurrence === 'monthly') nextExpiry.setMonth(currentExpiry.getMonth() + 1);
+                else if (item.recurrence === '3months') nextExpiry.setMonth(currentExpiry.getMonth() + 3);
+                else if (item.recurrence === '6months') nextExpiry.setMonth(currentExpiry.getMonth() + 6);
+                else if (item.recurrence === 'yearly') nextExpiry.setFullYear(currentExpiry.getFullYear() + 1);
+                else if (item.recurrence === '2years') nextExpiry.setFullYear(currentExpiry.getFullYear() + 2);
+
+                const nextDateString = nextExpiry.toISOString().split('T')[0];
+                
+                const archiveId = itemId + '-archive-' + Date.now();
+                const archiveItem = { ...item, id: archiveId, archived: true, archivedDate: todayStr };
+                const updatedMainItem = { ...item, expiryDate: nextDateString, lastCompleted: todayStr };
+
+                if (storageMode === 'local') {
+                    const idx = items.findIndex(i => i.id === itemId);
+                    items[idx] = updatedMainItem;
+                    items.push(archiveItem);
+                    localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                    renderDashboardUI();
+                } else {
+                    const userId = auth.currentUser?.uid;
+                    await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', itemId), updatedMainItem);
+                    await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', archiveId), archiveItem);
+                }
+            }
+        }
+
+        async function confirmItemDelete(itemId) {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            showDialogConfirm("Delete Tracked Schedule?", "Purge active document completely?", async () => {
+                if (storageMode === 'local') {
+                    items = items.filter(i => i.id !== itemId);
+                    localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                    renderDashboardUI();
+                } else {
+                    const userId = auth.currentUser?.uid;
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', itemId));
+                }
+            });
+        }
+
+        window.confirmArchiveDelete = async function(itemId) {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            showDialogConfirm("Delete Archived Record?", "Purge this completed history document completely?", async () => {
+                if (storageMode === 'local') {
+                    items = items.filter(i => i.id !== itemId);
+                    localStorage.setItem('lifesync_local_items', JSON.stringify(items));
+                    renderArchiveUI();
+                } else {
+                    const userId = auth.currentUser?.uid;
+                    await deleteDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', itemId));
+                }
+            });
+        };
+
+        function editItem(itemId) {
+            const item = items.find(i => i.id === itemId);
+            if (!item) return;
+
+            const itemIdObj = document.getElementById('itemId');
+            if(itemIdObj) itemIdObj.value = item.id;
+            
+            const itemNameObj = document.getElementById('itemName');
+            if(itemNameObj) itemNameObj.value = item.name;
+            
+            const itemCategoryObj = document.getElementById('itemCategory');
+            if(itemCategoryObj) itemCategoryObj.value = item.category;
+            
+            const itemExpiryDateObj = document.getElementById('itemExpiryDate');
+            if(itemExpiryDateObj) itemExpiryDateObj.value = item.expiryDate;
+            
+            const itemRecurrenceObj = document.getElementById('itemRecurrence');
+            if(itemRecurrenceObj) itemRecurrenceObj.value = item.recurrence;
+            
+            const itemNotesObj = document.getElementById('itemNotes');
+            if(itemNotesObj) itemNotesObj.value = item.notes || '';
+
+            const alert30 = document.getElementById('alert30');
+            if (alert30) alert30.checked = item.alertWindows ? item.alertWindows.includes(30) : false;
+            
+            const alert7 = document.getElementById('alert7');
+            if (alert7) alert7.checked = item.alertWindows ? item.alertWindows.includes(7) : false;
+            
+            const alertFinal = document.getElementById('alertFinal');
+            if (alertFinal) alertFinal.checked = item.alertWindows ? (item.alertWindows.includes(1) || item.alertWindows.includes(0)) : false;
+
+            const modalTitle = document.getElementById('modalTitle');
+            if(modalTitle) modalTitle.textContent = "Edit Tracked Item";
+            
+            openModal('addItemModal');
+        }
+
+        window.saveSettings = async function() {
+            const storageMode = localStorage.getItem('lifesync_storage_mode');
+            
+            const webhookInputObj = document.getElementById('webhookInput');
+            const webhookSecretInputObj = document.getElementById('webhookSecretInput');
+            const emailInputObj = document.getElementById('emailInput');
+            
+            const webhookIn = webhookInputObj ? webhookInputObj.value.trim() : "";
+            const webhookSecretIn = webhookSecretInputObj ? webhookSecretInputObj.value.trim() : "";
+            const emailIn = emailInputObj ? emailInputObj.value.trim() : "local-user@device.local";
+
+            if (storageMode === 'local') {
+                localStorage.setItem('lifesync_simulated_email', emailIn);
+                localStorage.setItem('lifesync_local_webhook', webhookIn);
+                localStorage.setItem('lifesync_local_secret', webhookSecretIn);
+                profile.webhook = webhookIn;
+                profile.webhookSecret = webhookSecretIn;
+                closeModal('settingsModal');
+            } else {
+                const userId = auth.currentUser?.uid;
+                if (!userId) return;
+                await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'settings', 'profile'), { 
+                    webhook: webhookIn, 
+                    webhookSecret: webhookSecretIn,
+                    lastWebhookLog: profile.lastWebhookLog || null
+                }, { merge: true });
+                closeModal('settingsModal');
+            }
+        };
+
+        window.saveProfileSettings = async function() { await window.saveSettings(); };
+
+        window.handleAuthSubmit = async function(event) {
+            event.preventDefault();
+            const emailObj = document.getElementById('authEmail');
+            const passwordObj = document.getElementById('authPassword');
+            
+            if(!emailObj || !passwordObj) return;
+
+            try {
+                if (isSignUpMode) {
+                    await createUserWithEmailAndPassword(auth, emailObj.value, passwordObj.value);
+                    showDialog("Welcome!", "Provisioned account space successfully.", "success");
+                } else {
+                    await signInWithEmailAndPassword(auth, emailObj.value, passwordObj.value);
+                }
+            } catch(err) {
+                if (err.message.includes("requests-from-referer") || err.code === 'auth/unauthorized-domain') {
+                    showDialog("Domain Blocked by Firebase", "Firebase blocked this preview sandbox domain. To test Cloud Sync, run this locally or add this URL to Firebase Console > Authentication > Settings > Authorized Domains.", "error");
+                } else {
+                    showDialog("Authentication Failure", err.message, "error");
+                }
+            }
+        };
+
+        window.toggleAuthMode = function() { isSignUpMode = !isSignUpMode; updateAuthPanelUI(); };
+        
+        window.signInAnonymouslyFallback = async function() { 
+            try {
+                await signInAnonymously(auth); 
+            } catch(err) {
+                if (err.message.includes("requests-from-referer") || err.code === 'auth/unauthorized-domain') {
+                    showDialog("Domain Blocked by Firebase", "Firebase blocked this preview sandbox domain. To test Cloud Sync, run this locally or add this URL to Firebase Console > Authentication > Settings > Authorized Domains.", "error");
+                } else {
+                    showDialog("Guest Login Error", err.message, "error");
+                }
+            }
+        };
+        
+        window.handleLogout = async function() { await signOut(auth); };
+        window.switchToCloudMode = function() { localStorage.setItem('lifesync_storage_mode', 'cloud'); location.reload(); };
+        window.switchToLocalMode = function() { localStorage.setItem('lifesync_storage_mode', 'local'); location.reload(); };
+        window.disconnectStorageMode = function() { localStorage.removeItem('lifesync_storage_mode'); location.reload(); };
+
+        window.exportActiveBackupData = function() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(items, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", `tasklapse_backup_${new Date().toISOString().split('T')[0]}.json`);
+            dlAnchorElem.click();
+        };
+
+        window.triggerImportSelection = function() { 
+            const importFile = document.getElementById('importFile');
+            if(importFile) importFile.click(); 
+        };
+        
+        window.importBackupData = function(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                const parsed = JSON.parse(e.target.result);
+                if (Array.isArray(parsed)) {
+                    if (localStorage.getItem('lifesync_storage_mode') === 'local') {
+                        items = parsed; localStorage.setItem('lifesync_local_items', JSON.stringify(items)); renderDashboardUI();
+                    } else {
+                        const userId = auth.currentUser?.uid;
+                        for (const item of parsed) { await setDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', item.id), item); }
+                    }
+                    closeModal('settingsModal');
+                }
+            };
+            reader.readAsText(file);
+        };
+
+        window.wipeCurrentData = function() {
+            showDialogConfirm("Wipe Database?", "Purge items storage completely?", async () => {
+                if (localStorage.getItem('lifesync_storage_mode') === 'local') {
+                    items = []; localStorage.removeItem('lifesync_local_items'); renderDashboardUI();
+                } else {
+                    const userId = auth.currentUser?.uid;
+                    for (const item of items) { await deleteDoc(doc(db, 'artifacts', appId, 'users', userId, 'items', item.id)); }
+                }
+                closeModal('settingsModal');
+            });
+        };
+
+        window.setCategoryFilter = function(category) {
+            currentFilter = category;
+            const pills = document.querySelectorAll('.category-filter');
+            pills.forEach(p => p.className = p.getAttribute('data-category') === category ? 'category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition bg-indigo-600/20 border-indigo-500/50 text-indigo-300' : 'category-filter px-3 py-1.5 rounded-lg text-xs font-semibold border transition bg-slate-800 border-slate-700 text-slate-300');
+            renderDashboardUI();
+        };
+
+        window.toggleRecurrenceHelper = function() {
+            const helperText = document.getElementById('recurrenceHelpText');
+            const itemRecurrence = document.getElementById('itemRecurrence');
+            if (helperText && itemRecurrence) {
+                helperText.textContent = itemRecurrence.value === 'none' ? "Once complete, document archives into history." : "Deadline rolls forward automatically.";
+            }
+        };
+
+        window.openModal = function(id) { 
+            const modal = document.getElementById(id);
+            if(modal) modal.className = "fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"; 
+        };
+        
+        window.closeModal = function(id) {
+            const modal = document.getElementById(id);
+            if(modal) modal.className = "hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm items-center justify-center z-50 p-4";
+            
+            if (id === 'addItemModal') {
+                const itemId = document.getElementById('itemId');
+                if(itemId) itemId.value = '';
+                
+                const itemName = document.getElementById('itemName');
+                if(itemName) itemName.value = '';
+                
+                const itemExpiryDate = document.getElementById('itemExpiryDate');
+                if(itemExpiryDate) itemExpiryDate.value = '';
+                
+                const itemNotes = document.getElementById('itemNotes');
+                if(itemNotes) itemNotes.value = '';
+            }
+        };
+
+        window.showDialog = function(title, message, type = 'info') {
+            const dialogTitle = document.getElementById('dialogTitle');
+            if(dialogTitle) dialogTitle.textContent = title;
+            
+            const dialogMessage = document.getElementById('dialogMessage');
+            if(dialogMessage) dialogMessage.textContent = message;
+            
+            const dialogBtnSecondary = document.getElementById('dialogBtnSecondary');
+            if(dialogBtnSecondary) dialogBtnSecondary.classList.add('hidden');
+            
+            const dialogBtnPrimary = document.getElementById('dialogBtnPrimary');
+            const dialogModal = document.getElementById('dialogModal');
+            
+            if(dialogBtnPrimary && dialogModal) {
+                dialogBtnPrimary.onclick = () => dialogModal.className = "hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm items-center justify-center z-[60] p-4";
+                dialogModal.className = "fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4";
+            }
+        };
+
+        window.showDialogConfirm = function(title, message, onConfirm) {
+            const dialogTitle = document.getElementById('dialogTitle');
+            if(dialogTitle) dialogTitle.textContent = title;
+            
+            const dialogMessage = document.getElementById('dialogMessage');
+            if(dialogMessage) dialogMessage.textContent = message;
+            
+            const dialogBtnSecondary = document.getElementById('dialogBtnSecondary');
+            if(dialogBtnSecondary) dialogBtnSecondary.classList.remove('hidden');
+            
+            const dialogBtnPrimary = document.getElementById('dialogBtnPrimary');
+            const dialogModal = document.getElementById('dialogModal');
+            
+            if(dialogBtnPrimary && dialogBtnSecondary && dialogModal) {
+                dialogBtnPrimary.onclick = () => { 
+                    dialogModal.className = "hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm items-center justify-center z-[60] p-4"; 
+                    if (onConfirm) onConfirm(); 
+                };
+                dialogBtnSecondary.onclick = () => dialogModal.className = "hidden fixed inset-0 bg-slate-950/80 backdrop-blur-sm items-center justify-center z-[60] p-4";
+                dialogModal.className = "fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-[60] p-4";
+            }
+        };
+
+        function escapeHtml(unsafe) { return unsafe ? unsafe.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : ""; }
     </script>
 </body>
 </html>
