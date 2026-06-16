@@ -348,7 +348,7 @@
     <script type="module">
         // Import Firebase components required
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signInAnonymously, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, addDoc, updateDoc, deleteDoc, doc, query, where, orderBy, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
         // Global State
@@ -385,13 +385,12 @@
 
         // --- AUTHENTICATION MODULE ---
 
-        // v2.7.0 Google Login Handler
+        // v2.7.1 Google Login Handler using redirect
         window.handleGoogleLogin = async () => {
             try {
                 hideError();
-                const result = await signInWithPopup(auth, googleProvider);
-                console.log("Google Login Success:", result.user.email);
-                // onAuthStateChanged will handle routing
+                // This redirects the page safely, bypassing all browser popup blockers
+                await signInWithRedirect(auth, googleProvider);
             } catch (error) {
                 console.error("Google Auth Error:", error);
                 showError("Google Sign-In failed: " + error.message);
@@ -451,6 +450,16 @@
             document.getElementById('authError').classList.add('hidden');
         }
 
+        // Handle Redirect Result
+        getRedirectResult(auth).then((result) => {
+            if (result) {
+               console.log("Google sign-in successful via redirect:", result.user.email);
+            }
+        }).catch((error) => {
+            console.error("Google Auth Redirect Error:", error);
+            showError("Google Sign-In failed: " + error.message);
+        });
+
         // Auth State Listener
         onAuthStateChanged(auth, (user) => {
             if (user) {
@@ -478,8 +487,8 @@
         // --- DATABASE & DATA MODULE ---
 
         function getCollectionRef() {
-            // v2.5 Ghost Alarm Hardening: Strict custom app path
-            return collection(db, 'artifacts', defaultAppId, 'users', currentUser.uid, 'tasks');
+            // v2.7.1 Connect back to the root path
+            return collection(db, 'users', currentUser.uid, 'tasks');
         }
 
         function listenToTasks() {
