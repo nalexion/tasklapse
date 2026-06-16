@@ -308,6 +308,16 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- NEW DIAGNOSTIC PANEL -->
+                <div class="mt-4 pt-4 border-t border-slate-700">
+                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Account Diagnostics</h4>
+                    <div class="bg-slate-900 border border-slate-800 rounded p-3 text-xs font-mono text-slate-400">
+                        <span class="text-slate-500">Your Active UID:</span> <br>
+                        <span id="diagnosticUid" class="text-indigo-400 break-all select-all">--</span>
+                    </div>
+                </div>
+
                 <div class="pt-4 flex justify-end gap-3 border-t border-slate-700 mt-4">
                     <button type="button" onclick="closeModal('settingsModal')" class="px-4 py-2 text-sm font-medium text-slate-300 hover:text-white">Cancel</button>
                     <button type="button" onclick="saveSettings()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg shadow-md">Save URL</button>
@@ -644,7 +654,13 @@
         };
         window.closeModal = (id) => document.getElementById(id).classList.add('hidden');
         window.openArchive = () => { renderArchives(); openModal('archiveModal'); };
-        window.openSettings = () => { loadSettings(); updateTelemetryUI(); openModal('settingsModal'); };
+        window.openSettings = () => { 
+            loadSettings(); 
+            updateTelemetryUI(); 
+            // UPDATED: Inject the active UID into the settings panel
+            document.getElementById('diagnosticUid').textContent = currentUser ? currentUser.uid : 'Unknown';
+            openModal('settingsModal'); 
+        };
     </script>
 </body>
 </html>
