@@ -103,18 +103,18 @@
         <header class="border-b border-slate-800 bg-slate-900/80 backdrop-blur sticky top-0 z-30">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
                 
-                <!-- Left: Logo & Branding -->
-                <div class="flex items-center space-x-3">
-                    <!-- Correctly formatted logo with rounded-xl and object-cover to remove white borders -->
-                    <img src="logo.png" alt="TaskLapse Logo" class="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-700" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48cmVjdCB3aWR0aD0iMTAwIiBoZWlnaHQ9IjEwMCIgZmlsbD0iIzFWMjkyRSIgcng9IjIwIi8+PHBhdGggZD0iTTMwIDUwbDE1IDE1IDMwLTMwIiBmaWxsPSJub25lIiBzdHJva2U9IiM4MTg0RkYiIHN0cm9rZS13aWR0aD0iMTAiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg=='">
-                    <div>
-                        <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
-                            TaskLapse <span id="syncBadge" class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
-                        </h1>
-                        <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
-                    </div>
-                </div>
-
+            <!-- Left: Logo & Branding -->
+            <div class="flex items-center space-x-3">
+            <img src="logo.png" alt="TaskLapse Logo" class="w-10 h-10 object-cover rounded-xl shadow-lg border border-slate-700">
+            <div>
+                    <!-- UPDATED: Added the v2.7.1 badge next to the title -->
+                    <h1 class="text-lg font-bold text-white tracking-wide flex items-center gap-2">
+                    TaskLapse <span class="text-indigo-400 text-xs align-top font-normal mr-1">v2.7.1</span>
+            <span id="syncBadge" class="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2 py-0.5 rounded-full font-normal">Cloud Synced</span>
+        </h1>
+        <p class="text-[10px] sm:text-xs text-slate-400" id="userEmailTag">Logged in: user@domain.com</p>
+    </div>
+</div>
                 <!-- Right: Search & Actions (Perfectly Aligned Flex Container) -->
                 <div class="flex items-center space-x-3">
                     <!-- Global Search (v2.6+) -->
