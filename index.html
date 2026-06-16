@@ -360,10 +360,8 @@
         let webhookData = { url: "", lastStatus: "None", lastTime: "--" };
         
         // Setup configuration securely for preview environments or production
-        const appConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {
-            // Fallback config to prevent crash in standard preview (will error naturally on auth if invalid)
-            apiKey: "dummy-key", authDomain: "dummy.firebaseapp.com", projectId: "dummy-id"
-        };
+       const firebaseConfig = {apiKey: "AIzaSyCh_S19J81W9HZNs-BDY0Zb1EMXAJZpKHM",authDomain: "lifesync-tracker.firebaseapp.com", projectId: "lifesync-tracker", storageBucket: "lifesync-tracker.firebasestorage.app", 
+                               messagingSenderId: "1010234160497", appId: "1:1010234160497:web:c69cb8b9f996e7b85cf2d0", measurementId: "G-EQHD4B1SDZ"};
         const defaultAppId = typeof __app_id !== 'undefined' ? __app_id : 'lifesync-cloud-tracker';
 
         // Initialize Firebase
